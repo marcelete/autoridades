@@ -2,23 +2,23 @@
 #  SIFCOP - Registra una Tarea Programada que corre la busqueda
 #  de autoridades AL INICIAR SESION en Windows.
 #
-#  El script buscar_autoridades.py tiene un candado interno:
-#  solo corre de verdad UNA vez por mes, asi que aunque el
-#  disparador sea "cada inicio de sesion", no se gastan creditos
-#  de Tavily de mas.
+#  El script buscar_autoridades.py (modo --auto) verifica una vez
+#  por dia y solo corre de verdad si pasaron 7 dias desde la ultima
+#  corrida. Asi, aunque el disparador sea "cada inicio de sesion",
+#  la busqueda se hace ~1 vez por semana y no gasta creditos de mas.
 #
 #  USO:  clic derecho sobre este archivo -> "Ejecutar con PowerShell"
 #        (o desde una consola:  powershell -ExecutionPolicy Bypass -File .\instalar_tarea_programada.ps1)
 #
 #  Para QUITARLA mas adelante:
-#        Unregister-ScheduledTask -TaskName 'SIFCOP - Autoridades (mensual)' -Confirm:$false
+#        Unregister-ScheduledTask -TaskName 'SIFCOP - Autoridades (semanal)' -Confirm:$false
 # ============================================================
 
 $ErrorActionPreference = "Stop"
 
 $dir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $bat = Join-Path $dir "correr_sifcop.bat"
-$nombreTarea = "SIFCOP - Autoridades (mensual)"
+$nombreTarea = "SIFCOP - Autoridades (semanal)"
 
 if (-not (Test-Path $bat)) {
     Write-Error "No se encontro el launcher: $bat"
@@ -50,13 +50,13 @@ $principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME `
 
 Register-ScheduledTask -TaskName $nombreTarea `
     -Action $accion -Trigger $trigger -Settings $ajustes -Principal $principal `
-    -Description "Busqueda mensual de autoridades SIFCOP al iniciar sesion (candado interno: 1 vez por mes)." | Out-Null
+    -Description "Verificacion de autoridades SIFCOP al iniciar sesion (1 chequeo por dia; busca cada 7 dias)." | Out-Null
 
 Write-Host ""
 Write-Host "OK. Tarea '$nombreTarea' registrada." -ForegroundColor Green
-Write-Host "Corre al iniciar sesion; el script salta si ya se corrio este mes."
+Write-Host "Verifica al iniciar sesion (1 vez por dia) y busca solo si pasaron 7 dias."
 Write-Host ""
-Write-Host "Probar ahora mismo (respeta el candado mensual):"
+Write-Host "Probar ahora mismo (respeta la cadencia de 7 dias):"
 Write-Host "    Start-ScheduledTask -TaskName '$nombreTarea'"
 Write-Host "Quitarla:"
 Write-Host "    Unregister-ScheduledTask -TaskName '$nombreTarea' -Confirm:`$false"

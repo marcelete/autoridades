@@ -77,6 +77,10 @@ PAUSA_ENTRE_BUSQUEDAS = 2    # segundos entre entidades en Tavily
 TAVILY_MAX_RESULTS    = 7
 TAVILY_CHARS_POR_RESULTADO = 1200  # truncar contenido de cada resultado
 
+# Cadencia: se corre una vez cada N dias. La tarea programada verifica al iniciar
+# sesion (una vez por dia, modo --auto), pero solo busca si ya pasaron estos dias.
+DIAS_ENTRE_CORRIDAS = 7
+
 # Busqueda adicional dirigida a dominios oficiales .gob.ar / .gov.ar
 BUSCAR_EN_DOMINIOS_OFICIALES = True
 DOMINIOS_OFICIALES_TAVILY    = ["gob.ar", "gov.ar"]
@@ -87,6 +91,7 @@ CARPETA_PROYECTO  = os.path.dirname(os.path.abspath(__file__))
 CARPETA_SALIDA    = os.path.join(CARPETA_PROYECTO, "output")
 MAESTRO_JSON      = os.path.join(CARPETA_SALIDA, "maestro.json")     # ubicacion preferida
 MAESTRO_JSON_RAIZ = os.path.join(CARPETA_PROYECTO, "maestro.json")   # fallback: raiz del proyecto
+MARCADOR_CHEQUEO  = os.path.join(CARPETA_SALIDA, "ultimo_chequeo.txt")  # fecha del ultimo chequeo diario
 
 # Libro de Excel donde cada corrida agrega una hoja nueva (salida con xlwings)
 EXCEL_LIBRO = os.path.join(
@@ -1036,26 +1041,68 @@ def regenerar_excel_desde_maestro():
 
 
 # =============================================================================
-# CANDADO MENSUAL (protege el presupuesto de Tavily)
+# CADENCIA SEMANAL + CHEQUEO DIARIO (protege el presupuesto de Tavily)
 # =============================================================================
 
-def corrida_de_este_mes():
-    """Devuelve el nombre del ultimo autoridades_*.json de este mes, o None."""
-    if not os.path.exists(CARPETA_SALIDA):
+def _fecha_de_archivo_corrida(nombre):
+    """Extrae el datetime del nombre autoridades_AAAAMMDD_HHMMSS.json."""
+    m = re.search(r'autoridades_(\d{8}_\d{6})', nombre)
+    if not m:
         return None
-    prefijo = "autoridades_" + datetime.now().strftime("%Y%m")
-    candidatos = sorted(
-        f for f in os.listdir(CARPETA_SALIDA)
-        if f.startswith(prefijo) and f.endswith(".json")
-    )
-    return candidatos[-1] if candidatos else None
+    try:
+        return datetime.strptime(m.group(1), "%Y%m%d_%H%M%S")
+    except ValueError:
+        return None
+
+
+def ultima_corrida():
+    """Devuelve (nombre, datetime) de la corrida mas reciente, o (None, None)."""
+    if not os.path.exists(CARPETA_SALIDA):
+        return None, None
+    corridas = []
+    for f in os.listdir(CARPETA_SALIDA):
+        if f.startswith("autoridades_") and f.endswith(".json"):
+            dt = _fecha_de_archivo_corrida(f)
+            if dt:
+                corridas.append((f, dt))
+    if not corridas:
+        return None, None
+    return max(corridas, key=lambda par: par[1])
+
+
+def dias_desde_ultima_corrida():
+    """Devuelve (dias:float, nombre:str) desde la ultima corrida, o (None, None)."""
+    nombre, dt = ultima_corrida()
+    if dt is None:
+        return None, None
+    dias = (datetime.now() - dt).total_seconds() / 86400.0
+    return dias, nombre
+
+
+def ya_se_chequeo_hoy():
+    """True si ya se hizo el chequeo diario hoy (marcador con la fecha)."""
+    try:
+        with open(MARCADOR_CHEQUEO, "r", encoding="utf-8") as f:
+            return f.read().strip() == datetime.now().strftime("%Y-%m-%d")
+    except OSError:
+        return False
+
+
+def registrar_chequeo_hoy():
+    """Guarda la fecha de hoy como ultimo chequeo diario."""
+    try:
+        os.makedirs(CARPETA_SALIDA, exist_ok=True)
+        with open(MARCADOR_CHEQUEO, "w", encoding="utf-8") as f:
+            f.write(datetime.now().strftime("%Y-%m-%d"))
+    except OSError:
+        pass
 
 
 # =============================================================================
 # MAIN
 # =============================================================================
 
-def main(forzar=False):
+def main(forzar=False, auto=False):
     fecha_hoy = datetime.now().strftime("%d/%m/%Y")
 
     if not GROQ_API_KEY or not TAVILY_API_KEY:
@@ -1064,17 +1111,27 @@ def main(forzar=False):
         print("script (ver .env.example) o como variables de entorno del sistema.")
         return
 
-    # Candado mensual: cada corrida gasta ~92 creditos de Tavily (de 1.000/mes),
-    # asi que se corre una vez por mes. --force lo saltea.
-    ya = corrida_de_este_mes()
-    if ya and not forzar:
-        print("=" * 60)
-        print("SIFCOP — ya existe una corrida de este mes:")
-        print(f"  {ya}")
-        print("Para no gastar el presupuesto de Tavily (~10 corridas/mes), se corre")
-        print("una vez por mes. Usá  --force  si realmente querés correr de nuevo.")
-        print("=" * 60)
-        return
+    if not forzar:
+        # Modo --auto (tarea programada al iniciar sesion): verificar UNA vez por dia.
+        # Los chequeos siguientes del mismo dia salen enseguida sin gastar nada.
+        if auto:
+            if ya_se_chequeo_hoy():
+                print("SIFCOP — la verificación de hoy ya se hizo. Sin acción.")
+                return
+            registrar_chequeo_hoy()
+
+        # Cadencia: solo se busca si pasaron DIAS_ENTRE_CORRIDAS desde la ultima corrida.
+        # (cada corrida gasta ~92 creditos de Tavily de 1.000/mes). --force lo saltea.
+        dias, ultima = dias_desde_ultima_corrida()
+        if dias is not None and dias < DIAS_ENTRE_CORRIDAS:
+            faltan = DIAS_ENTRE_CORRIDAS - dias
+            print("=" * 60)
+            print(f"SIFCOP — la última corrida fue hace {dias:.1f} día(s):")
+            print(f"  {ultima}")
+            print(f"Se corre cada {DIAS_ENTRE_CORRIDAS} días — faltan ~{faltan:.1f} día(s).")
+            print("Usá  --force  para correr igual.")
+            print("=" * 60)
+            return
 
     print("=" * 60)
     print("SIFCOP - Busqueda mensual de autoridades de seguridad  v6")
@@ -1217,7 +1274,10 @@ def _parse_args():
         description="SIFCOP — búsqueda mensual de autoridades de seguridad de Argentina."
     )
     p.add_argument("--force", action="store_true",
-                   help="Ignora el candado mensual y corre igual (gasta créditos de Tavily).")
+                   help="Ignora la cadencia y corre igual (gasta créditos de Tavily).")
+    p.add_argument("--auto", action="store_true",
+                   help="Modo tarea programada: verifica una vez por día y busca sólo "
+                        "si pasaron los días de la cadencia.")
     p.add_argument("--excel-desde-maestro", action="store_true",
                    help="Escribe una hoja de Excel desde maestro.json y sale (no gasta créditos).")
     return p.parse_args()
@@ -1228,4 +1288,4 @@ if __name__ == "__main__":
     if args.excel_desde_maestro:
         regenerar_excel_desde_maestro()
     else:
-        main(forzar=args.force)
+        main(forzar=args.force, auto=args.auto)
