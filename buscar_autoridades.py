@@ -83,8 +83,16 @@ DOMINIOS_OFICIALES_TAVILY    = ["gob.ar", "gov.ar"]
 TAVILY_MAX_RESULTS_OFICIAL   = 5
 
 # Archivos de salida en subcarpeta "output" del proyecto
-CARPETA_SALIDA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
-MAESTRO_JSON   = os.path.join(CARPETA_SALIDA, "maestro.json")
+CARPETA_PROYECTO  = os.path.dirname(os.path.abspath(__file__))
+CARPETA_SALIDA    = os.path.join(CARPETA_PROYECTO, "output")
+MAESTRO_JSON      = os.path.join(CARPETA_SALIDA, "maestro.json")     # ubicacion preferida
+MAESTRO_JSON_RAIZ = os.path.join(CARPETA_PROYECTO, "maestro.json")   # fallback: raiz del proyecto
+
+# Libro de Excel donde cada corrida agrega una hoja nueva (salida con xlwings)
+EXCEL_LIBRO = os.path.join(
+    CARPETA_PROYECTO,
+    "Autoridades de Min. Seg y FFSS - Fed y Prov (Listado y Fuentes).xlsx",
+)
 
 DOMINIOS_EXCLUIDOS = frozenset({
     "linkedin.com", "instagram.com", "twitter.com", "x.com",
@@ -335,6 +343,18 @@ def _campos_nombre(reg, seccion):
 # DETECCION DE FUENTES OFICIALES (.gob / .gov / .gob.ar / .gov.ar)
 # =============================================================================
 
+def _dominio(url):
+    """Devuelve el host de una URL sin el prefijo 'www.'.
+    (No usar str.lstrip('www.'): saca cualquier char del conjunto {w, ., } al inicio.)"""
+    try:
+        host = urlparse(url).netloc.lower().split(":")[0]
+        if host.startswith("www."):
+            host = host[4:]
+        return host
+    except Exception:
+        return ""
+
+
 def _es_fuente_oficial(url):
     """Devuelve True si la URL pertenece a un dominio oficial .gob/.gov/.gob.ar/.gov.ar."""
     try:
@@ -359,10 +379,7 @@ def extraer_fuentes_oficiales(resultados_por_entidad):
         for r in resultados:
             url = r.get("url", "")
             if _es_fuente_oficial(url):
-                try:
-                    dominio = urlparse(url).netloc.lower().lstrip("www.")
-                except Exception:
-                    dominio = url
+                dominio = _dominio(url) or url
                 oficiales.append({
                     "url":     url,
                     "titulo":  r.get("title", ""),
@@ -463,10 +480,7 @@ def construir_contexto(resultados_por_entidad):
             titulo    = r.get("title", "")
             url       = r.get("url", "")
             contenido = r.get("content", "")[:TAVILY_CHARS_POR_RESULTADO]
-            try:
-                dominio = urlparse(url).netloc.lower().lstrip("www.")
-            except Exception:
-                dominio = ""
+            dominio = _dominio(url)
             tag = " [FUENTE OFICIAL GOB/GOV]" if es_of else ""
             contexto += (
                 f"Fuente: {dominio}{tag}\n"
@@ -602,9 +616,11 @@ def mostrar_resultados(datos):
 # =============================================================================
 
 def buscar_referencia():
-    """Devuelve (ruta, tipo) del archivo de referencia para comparar."""
-    if os.path.exists(MAESTRO_JSON):
-        return MAESTRO_JSON, "maestro"
+    """Devuelve (ruta, tipo) del archivo de referencia para comparar.
+    Prioridad: output/maestro.json -> maestro.json en la raiz -> ultima corrida."""
+    for ruta_maestro in (MAESTRO_JSON, MAESTRO_JSON_RAIZ):
+        if os.path.exists(ruta_maestro):
+            return ruta_maestro, "maestro"
     if not os.path.exists(CARPETA_SALIDA):
         return None, None
     archivos = sorted([
@@ -830,16 +846,234 @@ def guardar_resultados(todos_los_datos, timestamp, tokens_totales):
 
 
 # =============================================================================
+# SALIDA A EXCEL (xlwings) — una hoja nueva por corrida
+# =============================================================================
+
+# Encabezado que replica el layout historico del libro (8 columnas)
+EXCEL_ENCABEZADO = [
+    "Jurisdicción", "Ministro / Cargo", "Fuente", "Fuerza",
+    "Jefe", "Subjefe", "Fuente 2", "Fecha Actualización",
+]
+# Que columna (1-indexed) resaltar segun el cargo que cambio
+COL_POR_CARGO = {"Ministro": 2, "Jefe": 5, "Subjefe": 6}
+COLOR_CAMBIO  = (255, 235, 156)   # amarillo suave
+
+
+def _bloques_desde_maestro(maestro):
+    """Convierte maestro.json al formato de bloques (igual que todos_los_datos)."""
+    ff = maestro.get("fuerzas_federales", {})
+    nombres_ff = {
+        "policia_federal_argentina":       "Policía Federal Argentina",
+        "gendarmeria_nacional_argentina":  "Gendarmería Nacional Argentina",
+        "prefectura_naval_argentina":      "Prefectura Naval Argentina",
+        "policia_seguridad_aeroportuaria": "Policía de Seguridad Aeroportuaria",
+        "servicio_penitenciario_federal":  "Servicio Penitenciario Federal",
+    }
+    registros_ff = []
+    for clave, nombre in nombres_ff.items():
+        valores = list(ff.get(clave, {}).values())
+        registros_ff.append({
+            "jurisdiccion":       nombre,
+            "cargo_autoridad_1":  "",
+            "nombre_autoridad_1": valores[0] if len(valores) >= 1 else "",
+            "cargo_autoridad_2":  "",
+            "nombre_autoridad_2": valores[1] if len(valores) >= 2 else "",
+            "fuente_url":         "",
+            "notas":              "",
+        })
+
+    registros_prov = []
+    for jur in maestro.get("jurisdicciones_provinciales_y_caba", []):
+        ms  = jur.get("ministerio_seguridad", {})
+        pol = jur.get("policia", {})
+        registros_prov.append({
+            "jurisdiccion":          jur.get("jurisdiccion", ""),
+            "ministro_cargo":        ms.get("cargo", ""),
+            "ministro_nombre":       ms.get("titular", ""),
+            "jefe_policia_cargo":    "",
+            "jefe_policia_nombre":   pol.get("jefe", ""),
+            "subjefe_policia_cargo": "",
+            "subjefe_policia_nombre": pol.get("subjefe", ""),
+            "fuerza":                pol.get("nombre", ""),
+            "fuente_url":            "",
+            "notas":                 "",
+        })
+
+    fecha = maestro.get("fecha_actualizacion", "")
+    return [
+        {"fecha_busqueda": fecha, "seccion": "fuerzas_federales",    "registros": registros_ff},
+        {"fecha_busqueda": fecha, "seccion": "policias_provinciales", "registros": registros_prov},
+    ]
+
+
+def _fila_excel(reg, seccion, fecha_txt):
+    """Arma una fila de 8 columnas para la hoja de Excel a partir de un registro."""
+    if seccion == "fuerzas_federales":
+        return [
+            "Federal",
+            "",                                    # Ministro / Cargo (no aplica a fuerzas)
+            reg.get("fuente_url", ""),
+            reg.get("jurisdiccion", ""),           # Fuerza
+            reg.get("nombre_autoridad_1", ""),     # Jefe
+            reg.get("nombre_autoridad_2", ""),     # Subjefe
+            "",                                    # Fuente 2
+            fecha_txt,
+        ]
+    ministro = reg.get("ministro_nombre", "")
+    cargo    = reg.get("ministro_cargo", "")
+    ministro_cargo = f"{ministro} ({cargo})" if cargo and cargo != "NO ENCONTRADO" else ministro
+    return [
+        reg.get("jurisdiccion", ""),
+        ministro_cargo,
+        reg.get("fuente_url", ""),
+        reg.get("fuerza", ""),                     # nombre de la fuerza (viene del maestro; vacio en corrida)
+        reg.get("jefe_policia_nombre", ""),
+        reg.get("subjefe_policia_nombre", ""),
+        "",                                        # Fuente 2
+        fecha_txt,
+    ]
+
+
+def _nombre_hoja_valido(nombres_existentes, base):
+    """Nombre de hoja valido para Excel: <=31 chars, sin []:*?/\\ y sin duplicar."""
+    base = re.sub(r'[\[\]:*?/\\]', '_', base)[:31]
+    nombre = base
+    i = 2
+    while nombre in nombres_existentes:
+        sufijo = f"_{i}"
+        nombre = base[:31 - len(sufijo)] + sufijo
+        i += 1
+    return nombre
+
+
+def guardar_en_excel(todos_los_datos, nombre_hoja, diferencias=None, fecha_txt=None):
+    """Agrega una hoja nueva al libro de Excel con los resultados de la corrida.
+    Resalta en amarillo las celdas cuyo nombre cambio respecto a la referencia.
+    Devuelve el nombre de la hoja creada, o None si no se pudo."""
+    try:
+        import xlwings as xw
+    except ImportError:
+        print("  Excel: xlwings no está instalado — se omite (pip install xlwings).")
+        return None
+
+    if fecha_txt is None:
+        fecha_txt = datetime.now().strftime("%Y-%m-%d")
+
+    # Armar filas y recordar en que fila quedo cada jurisdiccion (para resaltar)
+    filas = []
+    fila_por_jur = {}   # jurisdiccion_normalizada -> nro de fila en la hoja (1-indexed, con encabezado en fila 1)
+    for bloque in todos_los_datos:
+        seccion = bloque.get("seccion", "")
+        for reg in bloque.get("registros", []):
+            filas.append(_fila_excel(reg, seccion, fecha_txt))
+            fila_por_jur[_normalizar(reg.get("jurisdiccion", ""))] = len(filas) + 1
+
+    app = None
+    wb  = None
+    try:
+        app = xw.App(visible=False, add_book=False)
+        app.display_alerts = False
+        if os.path.exists(EXCEL_LIBRO):
+            wb = app.books.open(EXCEL_LIBRO)
+        else:
+            wb = app.books.add()
+
+        nombres = {s.name for s in wb.sheets}
+        nombre  = _nombre_hoja_valido(nombres, nombre_hoja)
+        sht = wb.sheets.add(nombre, after=wb.sheets[-1])
+
+        # Encabezado + datos en un solo bloque desde A1
+        sht.range("A1").value = [EXCEL_ENCABEZADO] + filas
+        sht.range((1, 1), (1, len(EXCEL_ENCABEZADO))).font.bold = True
+
+        # Resaltar celdas que cambiaron
+        for d in (diferencias or []):
+            fila = fila_por_jur.get(_normalizar(d.get("jurisdiccion", "")))
+            col  = COL_POR_CARGO.get(d.get("cargo", ""))
+            if fila and col:
+                sht.range((fila, col)).color = COLOR_CAMBIO
+
+        try:
+            sht.autofit("columns")
+        except Exception:
+            pass
+
+        wb.save()
+        return nombre
+    except Exception as e:
+        print(f"  Excel: no se pudo escribir la hoja ({type(e).__name__}: {e}).")
+        print("        Verificá que el libro no esté abierto en otra ventana de Excel.")
+        return None
+    finally:
+        try:
+            if wb is not None:
+                wb.close()
+        except Exception:
+            pass
+        try:
+            if app is not None:
+                app.quit()
+        except Exception:
+            pass
+
+
+def regenerar_excel_desde_maestro():
+    """Escribe una hoja de Excel con el contenido verificado de maestro.json.
+    No gasta creditos de API. Sirve para dejar el Excel al dia ya mismo."""
+    ruta = MAESTRO_JSON if os.path.exists(MAESTRO_JSON) else MAESTRO_JSON_RAIZ
+    if not os.path.exists(ruta):
+        print("No se encontró maestro.json (ni en output/ ni en la raíz).")
+        return
+    with open(ruta, "r", encoding="utf-8") as f:
+        maestro = json.load(f)
+    bloques = _bloques_desde_maestro(maestro)
+    fecha   = maestro.get("fecha_actualizacion", datetime.now().strftime("%Y-%m-%d"))
+    nombre  = "maestro_" + datetime.now().strftime("%Y%m%d")
+    print(f"Escribiendo hoja '{nombre}' en el Excel desde el maestro verificado...")
+    hoja = guardar_en_excel(bloques, nombre, diferencias=None, fecha_txt=fecha)
+    if hoja:
+        print(f"Listo. Hoja '{hoja}' creada en:\n  {EXCEL_LIBRO}")
+
+
+# =============================================================================
+# CANDADO MENSUAL (protege el presupuesto de Tavily)
+# =============================================================================
+
+def corrida_de_este_mes():
+    """Devuelve el nombre del ultimo autoridades_*.json de este mes, o None."""
+    if not os.path.exists(CARPETA_SALIDA):
+        return None
+    prefijo = "autoridades_" + datetime.now().strftime("%Y%m")
+    candidatos = sorted(
+        f for f in os.listdir(CARPETA_SALIDA)
+        if f.startswith(prefijo) and f.endswith(".json")
+    )
+    return candidatos[-1] if candidatos else None
+
+
+# =============================================================================
 # MAIN
 # =============================================================================
 
-def main():
+def main(forzar=False):
     fecha_hoy = datetime.now().strftime("%d/%m/%Y")
 
     if not GROQ_API_KEY or not TAVILY_API_KEY:
         print("ERROR: Faltan API keys.")
         print("Definí GROQ_API_KEY y TAVILY_API_KEY en un archivo .env junto al")
         print("script (ver .env.example) o como variables de entorno del sistema.")
+        return
+
+    # Candado mensual: cada corrida gasta ~92 creditos de Tavily (de 1.000/mes),
+    # asi que se corre una vez por mes. --force lo saltea.
+    ya = corrida_de_este_mes()
+    if ya and not forzar:
+        print("=" * 60)
+        print("SIFCOP — ya existe una corrida de este mes:")
+        print(f"  {ya}")
+        print("Para no gastar el presupuesto de Tavily (~10 corridas/mes), se corre")
+        print("una vez por mes. Usá  --force  si realmente querés correr de nuevo.")
+        print("=" * 60)
         return
 
     print("=" * 60)
@@ -957,10 +1191,41 @@ def main():
     ruta_dif = guardar_diferencias(diferencias, timestamp)
     print(f"  Reporte diferencias: {ruta_dif}")
 
+    # Guardar una hoja nueva en el Excel (xlwings), resaltando los cambios
+    print(f"\n{'=' * 60}")
+    print("  GUARDANDO HOJA EN EXCEL (xlwings)")
+    print(f"{'=' * 60}")
+    nombre_hoja = "autoridades_" + timestamp[:8]   # timestamp = AAAAMMDD_HHMMSS
+    hoja = guardar_en_excel(
+        todos_los_datos, nombre_hoja,
+        diferencias=diferencias,
+        fecha_txt=datetime.now().strftime("%Y-%m-%d"),
+    )
+    if hoja:
+        print(f"  Hoja creada: '{hoja}' en {os.path.basename(EXCEL_LIBRO)}")
+        if diferencias:
+            print(f"  ({len(diferencias)} celda(s) resaltada(s) en amarillo por cambio)")
+
     print(f"\n{'=' * 60}")
     print(f"  Listo. Archivos en: {CARPETA_SALIDA}")
     print(f"{'=' * 60}")
 
 
+def _parse_args():
+    import argparse
+    p = argparse.ArgumentParser(
+        description="SIFCOP — búsqueda mensual de autoridades de seguridad de Argentina."
+    )
+    p.add_argument("--force", action="store_true",
+                   help="Ignora el candado mensual y corre igual (gasta créditos de Tavily).")
+    p.add_argument("--excel-desde-maestro", action="store_true",
+                   help="Escribe una hoja de Excel desde maestro.json y sale (no gasta créditos).")
+    return p.parse_args()
+
+
 if __name__ == "__main__":
-    main()
+    args = _parse_args()
+    if args.excel_desde_maestro:
+        regenerar_excel_desde_maestro()
+    else:
+        main(forzar=args.force)

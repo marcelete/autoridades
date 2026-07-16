@@ -12,11 +12,24 @@ El código, los prompts, los archivos de salida y los términos del dominio est�
 
 ```bash
 # Instalar dependencias del script activo
-pip install groq tavily-python
+pip install groq tavily-python xlwings
 
-# Correr la búsqueda mensual (escribe todo bajo output/)
+# Correr la búsqueda mensual (escribe todo bajo output/ + una hoja nueva en el Excel)
+# Trae un candado: si ya se corrió este mes, sale sin gastar créditos.
 python buscar_autoridades.py
+
+# Forzar la corrida ignorando el candado mensual (gasta créditos de Tavily)
+python buscar_autoridades.py --force
+
+# Regenerar una hoja de Excel desde maestro.json, sin búsquedas ni créditos
+python buscar_autoridades.py --excel-desde-maestro
 ```
+
+Las API keys viven en un archivo `.env` (gitignoreado; ver `.env.example`). El script lo
+carga solo con `_cargar_env()`. Sin keys válidas, `main()` corta con un mensaje claro.
+
+La automatización "al iniciar sesión" está en `correr_sifcop.bat` +
+`instalar_tarea_programada.ps1` (ver [AUTOMATIZACION.md](AUTOMATIZACION.md)).
 
 No hay build, ni linter, ni suite de tests. `prueba.py` es un chequeo de conexión descartable del camino **legacy** con Gemini (ver más abajo), no un test.
 
@@ -38,10 +51,11 @@ Todo el pipeline vive en [buscar_autoridades.py](buscar_autoridades.py). Procesa
 ### La comparación y el gotcha de `maestro.json`
 
 `buscar_referencia()` elige la referencia por orden de prioridad:
-1. **`output/maestro.json`** (un maestro fijo, verificado a mano) si existe, si no
-2. el `output/autoridades_*.json` más reciente (última corrida).
+1. **`output/maestro.json`** (maestro fijo, verificado a mano) si existe, si no
+2. **`maestro.json` en la raíz del proyecto** (fallback), si no
+3. el `output/autoridades_*.json` más reciente (última corrida).
 
-**Importante:** el maestro [maestro.json](maestro.json) hoy vive en la **raíz del proyecto**, pero el código sólo lo lee desde `output/maestro.json` (`MAESTRO_JSON = CARPETA_SALIDA/"maestro.json"`). Hasta que se copie dentro de `output/`, las comparaciones caen a la corrida anterior en vez del maestro fijo. Este paso de copiado es una tarea pendiente conocida. Peor aún: **hoy `output/` ni siquiera existe** (el script nunca se corrió en esta máquina), así que toda corrida arranca como "primera ejecución — sin referencia" y no compara contra nada hasta que se resuelva esto.
+El maestro [maestro.json](maestro.json) vive en la **raíz del proyecto**. Antes el código sólo lo leía desde `output/maestro.json` y las comparaciones caían a la corrida anterior; **ya está resuelto**: `buscar_referencia()` ahora también toma el maestro de la raíz (`MAESTRO_JSON_RAIZ`). Igual conviene, si algún día querés un maestro distinto para las corridas, dejarlo en `output/maestro.json` (tiene prioridad).
 
 El esquema anidado del maestro difiere del esquema de salida por consulta, así que dos adaptadores los normalizan a un índice común `{jurisdiccion: {cargo: nombre}}`: `_indice_desde_maestro()` vs `_indice_desde_bloques()`. La comparación coteja **apellidos normalizados** (sin tildes, ignorando `NO ENCONTRADO`/vacío) — esto suprime específicamente los falsos positivos por nombre-completo-vs-apellido y por diferencias de tildes. Conservá eso al tocar `comparar_con_referencia()`. Limitación conocida: comparar sólo el último apellido puede **ocultar un cambio real** cuando el apellido coincide pero cambia la persona (p. ej. "Juan Pérez" → "Marcelo Pérez").
 
@@ -51,9 +65,11 @@ El dato de referencia validado a mano es **[maestro.json](maestro.json)** (82 da
 
 Estructura del Excel (1 hoja `Jurisdicciones Provinciales y C...`, 30 filas de datos): columnas `Jurisdicción | Ministro / Cargo | Fuente | Fuerza | Jefe | Subjefe | Fuente 2 | Fecha Actualización`. Filas 2–25 = provincias/CABA; filas 26–30 = las 5 fuerzas federales.
 
-### Salidas (todas bajo `output/`, con timestamp)
+### Salidas
 
-`autoridades_<ts>.json` / `.csv` (resultados principales), `fuentes_oficiales_<ts>.csv` / `.txt` (páginas oficiales detectadas), `diferencias_<ts>.txt` (reporte de cambios), y un `log_tokens.txt` que se va agregando.
+Todas bajo `output/` con timestamp: `autoridades_<ts>.json` / `.csv` (resultados principales), `fuentes_oficiales_<ts>.csv` / `.txt` (páginas oficiales detectadas), `diferencias_<ts>.txt` (reporte de cambios), `log_tokens.txt` y `log_ejecucion.txt` (se van agregando).
+
+**Además**, cada corrida agrega una **hoja nueva al Excel** vía xlwings (`guardar_en_excel()`), llamada `autoridades_AAAAMMDD`, con el layout de 8 columnas y las celdas cambiadas resaltadas en amarillo. La salida a Excel está aislada en `try/except`: si Excel no está disponible o el libro está abierto, se avisa pero no se pierde el JSON/CSV. `_bloques_desde_maestro()` convierte el maestro al mismo formato de bloques para poder exportarlo (`--excel-desde-maestro`).
 
 ## Dos implementaciones — sabé cuál está viva
 
@@ -62,19 +78,22 @@ Estructura del Excel (1 hoja `Jurisdicciones Provinciales y C...`, 30 filas de d
 
 ## Configuración
 
-Las API keys se leen de variables de entorno con fallbacks hardcodeados en el código fuente (`GROQ_API_KEY`, `TAVILY_API_KEY` en `buscar_autoridades.py`; las keys de Gemini en `config.txt`). Definí las variables de entorno para sobrescribirlas. Los parámetros ajustables (modelo, tope de tokens, reintentos/backoff, duración de pausas, cantidad de resultados de Tavily, toggle de dominios oficiales) son las constantes en `MAYÚSCULAS` del bloque CONFIGURACION cerca del inicio del script.
+Las API keys se leen **sólo** del entorno o de un archivo `.env` junto al script (`_cargar_env()` lo carga sin dependencias externas y sin pisar variables ya definidas). **Ya no hay keys hardcodeadas** en el código: `GROQ_API_KEY` / `TAVILY_API_KEY` tienen fallback vacío y `main()` corta si faltan. El `.env` real está en `.gitignore`; `.env.example` es la plantilla versionada. Los parámetros ajustables (modelo, tope de tokens, reintentos/backoff, duración de pausas, cantidad de resultados de Tavily, toggle de dominios oficiales) son las constantes en `MAYÚSCULAS` del bloque CONFIGURACION cerca del inicio del script.
 
 ## Restricciones y presupuesto
 
 **Presupuesto cero — no se compran tokens.** Todo el pipeline depende de free tiers: Groq (LLM) y Tavily (búsqueda web, 1.000 créditos/mes). Cada corrida gasta ~46 búsquedas Tavily × 2 créditos (`search_depth="advanced"`) ≈ **~92 créditos**, o sea un tope práctico de ~10 corridas/mes. Por eso el diseño es **una corrida por mes**, no por evento: correrlo en cada arranque de la PC agotaría los créditos en días. Cualquier automatización debe throttlear a una corrida mensual.
 
-## Roadmap (pedido por el usuario, aún NO implementado)
+## Mejoras ya implementadas (antes eran roadmap)
 
-- **Salida a Excel con xlwings:** cada corrida debe agregar una **hoja nueva** (`autoridades_AAAAMMDD`) al workbook existente, respetando su layout de 8 columnas, en vez de sólo JSON/CSV. Hoy el script no toca el Excel.
-- **Automatización al iniciar sesión (costo cero):** Task Scheduler de Windows con trigger "al iniciar sesión" corriendo `buscar_autoridades.py`, pero con un guard que **salta si ya se corrió este mes** (chequear fecha de la última salida en `output/`).
+- **Salida a Excel con xlwings:** implementada (`guardar_en_excel`, `--excel-desde-maestro`). Ver la sección de Salidas.
+- **Automatización al iniciar sesión (costo cero):** `correr_sifcop.bat` + `instalar_tarea_programada.ps1`, con **candado mensual** (`corrida_de_este_mes()`) que salta si ya se corrió este mes. Ver [AUTOMATIZACION.md](AUTOMATIZACION.md).
+- **Fix del maestro:** `buscar_referencia()` ahora encuentra el maestro también en la raíz.
+- **Fix `.lstrip("www.")`:** reemplazado por el helper `_dominio()`.
+- **Seguridad:** las API keys salieron del código a un `.env` gitignoreado (`_cargar_env()`).
+
+## Pendiente / ideas a futuro
+
 - **Verificación asistida por Claude:** cuando la corrida mensual marca diferencias, abrir una sesión de Claude Code y verificar cada cambio contra fuentes oficiales (WebSearch, incluido en el plan, sin API paga) antes de tocar el maestro.
-
-## Bugs conocidos menores
-
-- `.lstrip("www.")` (en `extraer_fuentes_oficiales` y `construir_contexto`) no saca el prefijo `www.` sino cualquier char del conjunto `{w, ., }` al inicio → `web.policiadesalta.gob.ar` queda como `eb.policiadesalta.gob.ar`. Sólo afecta el nombre de dominio mostrado. Corregir con `if host.startswith("www."): host = host[4:]`.
-- API keys reales hardcodeadas en `buscar_autoridades.py`, `config.txt` y `prueba.py`. Si el repo se comparte, se filtran. Convendría moverlas a variables de entorno / `.env` y rotarlas.
+- **Rotar las API keys** que estuvieron hardcodeadas (siguen siendo válidas; conviene regenerarlas por las dudas).
+- **Limitación de la comparación por apellido:** puede ocultar cambios de persona con mismo apellido (ver sección de comparación).
