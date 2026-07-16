@@ -26,6 +26,9 @@ python buscar_autoridades.py --force
 
 # Regenerar una hoja de Excel desde maestro.json, sin búsquedas ni créditos
 python buscar_autoridades.py --excel-desde-maestro
+
+# Correr sin la ventana emergente de alerta (igual guarda el reporte de diferencias)
+python buscar_autoridades.py --sin-alerta
 ```
 
 Las API keys viven en un archivo `.env` (gitignoreado; ver `.env.example`). El script lo
@@ -62,6 +65,8 @@ El maestro [maestro.json](maestro.json) vive en la **raíz del proyecto**. Antes
 
 El esquema anidado del maestro difiere del esquema de salida por consulta, así que dos adaptadores los normalizan a un índice común `{jurisdiccion: {cargo: nombre}}`: `_indice_desde_maestro()` vs `_indice_desde_bloques()`. La comparación coteja **apellidos normalizados** (sin tildes, ignorando `NO ENCONTRADO`/vacío) — esto suprime específicamente los falsos positivos por nombre-completo-vs-apellido y por diferencias de tildes. Conservá eso al tocar `comparar_con_referencia()`. Limitación conocida: comparar sólo el último apellido puede **ocultar un cambio real** cuando el apellido coincide pero cambia la persona (p. ej. "Juan Pérez" → "Marcelo Pérez").
 
+Cuando hay diferencias, además del reporte en texto, `mostrar_alerta_cambios()` abre una **ventana emergente con tkinter** (stdlib, sin dependencias) al final de `main()` — pensada para la corrida desatendida de la tarea programada, para que el cambio no pase desapercibido aunque no haya consola visible. Se auto-cierra a los 30 minutos si nadie la ve. Desactivable con `--sin-alerta` (el reporte en texto se guarda igual). Si no hay sesión gráfica disponible, avisa por consola y sigue sin cortar la corrida.
+
 ### La fuente verificada es el JSON, no el Excel
 
 El dato de referencia validado a mano es **[maestro.json](maestro.json)** (82 datos, corregidos según la lista de "Datos verificados con errores" de [resumen proyecto.md](resumen%20proyecto.md)). El Excel `Autoridades de Min. Seg y FFSS...xlsx` es el **listado original y está desactualizado**: todavía tiene valores viejos que el maestro ya corrigió (Corrientes: Gaya → Vallejos; Jujuy: Corro → Gil Urquiola; Catamarca: Natella/Córdoba/Sánchez → Venturini/Herrera/Seiler; Santiago del Estero: B. Herrera → Barbur; La Pampa subjefe: Calzada → Sosa; Salta ministro difiere; etc.). Al sincronizar o regenerar, **el JSON manda sobre el Excel**.
@@ -70,7 +75,7 @@ Estructura del Excel (1 hoja `Jurisdicciones Provinciales y C...`, 30 filas de d
 
 ### Salidas
 
-Todas bajo `output/` con timestamp: `autoridades_<ts>.json` / `.csv` (resultados principales), `fuentes_oficiales_<ts>.csv` / `.txt` (páginas oficiales detectadas), `diferencias_<ts>.txt` (reporte de cambios), `log_tokens.txt` y `log_ejecucion.txt` (se van agregando).
+Todas bajo `output/` con timestamp: `autoridades_<ts>.json` / `.csv` (resultados principales), `fuentes_oficiales_<ts>.csv` / `.txt` (páginas oficiales detectadas), `diferencias_<ts>.txt` (reporte de cambios), `log_tokens.txt` y `log_ejecucion.txt` (se van agregando). Si hay diferencias, también se abre una ventana emergente (ver más abajo).
 
 **Además**, cada corrida agrega una **hoja nueva al Excel** vía xlwings (`guardar_en_excel()`), llamada `autoridades_AAAAMMDD`, con el layout de 8 columnas y las celdas cambiadas resaltadas en amarillo. La salida a Excel está aislada en `try/except`: si Excel no está disponible o el libro está abierto, se avisa pero no se pierde el JSON/CSV. `_bloques_desde_maestro()` convierte el maestro al mismo formato de bloques para poder exportarlo (`--excel-desde-maestro`).
 

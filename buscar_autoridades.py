@@ -737,6 +737,62 @@ def guardar_diferencias(diferencias, timestamp):
     return ruta
 
 
+def mostrar_alerta_cambios(diferencias, ruta_dif, etiqueta_ref, auto_cierre_ms=30 * 60 * 1000):
+    """Abre una ventana emergente avisando de los cambios detectados.
+    Pensada para corridas desatendidas (tarea programada): la ventana queda
+    al frente aunque no haya consola visible. Si no hay sesion grafica
+    disponible (o algo falla), avisa por consola y sigue sin interrumpir."""
+    if not diferencias:
+        return
+    try:
+        import tkinter as tk
+        from tkinter import scrolledtext
+    except ImportError:
+        print("  Alerta: tkinter no disponible — se omite la ventana emergente.")
+        return
+
+    try:
+        root = tk.Tk()
+        root.title(f"SIFCOP — {len(diferencias)} cambio(s) detectado(s)")
+        root.attributes("-topmost", True)
+        root.geometry("640x480")
+
+        tk.Label(
+            root,
+            text=(
+                f"Se detectaron {len(diferencias)} cambio(s) de autoridades\n"
+                f"respecto a {etiqueta_ref}.\n"
+                f"Verificar antes de actualizar maestro.json."
+            ),
+            font=("Segoe UI", 11, "bold"), justify="left", anchor="w",
+        ).pack(fill="x", padx=12, pady=(12, 8))
+
+        texto = scrolledtext.ScrolledText(root, wrap="word", font=("Consolas", 10))
+        texto.pack(fill="both", expand=True, padx=12, pady=(0, 8))
+        for d in diferencias:
+            texto.insert(
+                "end",
+                f"{d['jurisdiccion']} / {d['cargo']}\n"
+                f"    Antes: {d['anterior']}\n"
+                f"    Ahora: {d['nuevo']}\n\n",
+            )
+        texto.config(state="disabled")
+
+        tk.Label(
+            root, text=f"Reporte completo: {ruta_dif}",
+            font=("Segoe UI", 8), fg="gray40", anchor="w", justify="left",
+        ).pack(fill="x", padx=12, pady=(0, 4))
+
+        tk.Button(root, text="Cerrar", width=15, command=root.destroy).pack(pady=(0, 12))
+
+        # Auto-cierre de seguridad si nadie la ve (evita ventanas acumuladas).
+        root.after(auto_cierre_ms, root.destroy)
+
+        root.mainloop()
+    except Exception as e:
+        print(f"  Alerta: no se pudo mostrar la ventana ({type(e).__name__}: {e}).")
+
+
 # =============================================================================
 # GUARDAR FUENTES OFICIALES
 # =============================================================================
@@ -1102,7 +1158,7 @@ def registrar_chequeo_hoy():
 # MAIN
 # =============================================================================
 
-def main(forzar=False, auto=False):
+def main(forzar=False, auto=False, alertar=True):
     fecha_hoy = datetime.now().strftime("%d/%m/%Y")
 
     if not GROQ_API_KEY or not TAVILY_API_KEY:
@@ -1267,6 +1323,11 @@ def main(forzar=False, auto=False):
     print(f"  Listo. Archivos en: {CARPETA_SALIDA}")
     print(f"{'=' * 60}")
 
+    # Alerta visual (ventana emergente) — al final, con todo ya guardado en disco.
+    if diferencias and alertar:
+        print("\n  Abriendo ventana de alerta de cambios...")
+        mostrar_alerta_cambios(diferencias, ruta_dif, etiqueta)
+
 
 def _parse_args():
     import argparse
@@ -1280,6 +1341,8 @@ def _parse_args():
                         "si pasaron los días de la cadencia.")
     p.add_argument("--excel-desde-maestro", action="store_true",
                    help="Escribe una hoja de Excel desde maestro.json y sale (no gasta créditos).")
+    p.add_argument("--sin-alerta", action="store_true",
+                   help="No abrir la ventana emergente aunque se detecten cambios.")
     return p.parse_args()
 
 
@@ -1288,4 +1351,4 @@ if __name__ == "__main__":
     if args.excel_desde_maestro:
         regenerar_excel_desde_maestro()
     else:
-        main(forzar=args.force, auto=args.auto)
+        main(forzar=args.force, auto=args.auto, alertar=not args.sin_alerta)

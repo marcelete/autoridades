@@ -52,11 +52,23 @@ python buscar_autoridades.py --force
 python buscar_autoridades.py --excel-desde-maestro
 ```
 
+## Alerta visual de cambios
+
+Si la corrida detecta diferencias contra el maestro, al terminar se abre una
+**ventana emergente** (con `tkinter`, ya viene con Python) que lista jurisdicción,
+cargo, valor anterior y nuevo. Queda al frente aunque la tarea corra oculta, así el
+cambio no pasa desapercibido. Se cierra sola a los 30 minutos si nadie la ve, o antes
+con el botón "Cerrar". Para desactivarla (el reporte en texto se guarda igual):
+
+```bash
+python buscar_autoridades.py --sin-alerta
+```
+
 ## Dónde queda el registro
 
 - Consola de cada corrida automática: `output\log_ejecucion.txt`
 - Resultados: `output\autoridades_<timestamp>.json` / `.csv`
-- Cambios detectados: `output\diferencias_<timestamp>.txt`
+- Cambios detectados: `output\diferencias_<timestamp>.txt` + ventana emergente si hay cambios
 - Hoja nueva por corrida en el Excel, con las celdas cambiadas resaltadas en amarillo.
 
 ## Verificación asistida (recomendado)
