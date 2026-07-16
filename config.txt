@@ -1,0 +1,4 @@
+API_KEY_1 = os.environ.get("GEMINI_API_KEY_1", "")
+API_KEY_2 = os.environ.get("GEMINI_API_KEY_2", "")
+
+MODELO                = "gemini-2.5-flash-lite"

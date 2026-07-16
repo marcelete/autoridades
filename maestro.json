@@ -1,0 +1,322 @@
+{
+  "fecha_actualizacion": "2026-04-23",
+  "pais": "Argentina",
+  "ministerio_seguridad_nacion": {
+    "ministra": "Alejandra Susana Monteoliva",
+    "secretario_seguridad": "Martín Ferlauto",
+    "secretario_narcotrafico": "Martín Verrier",
+    "subsecretario_articulacion_federal": "Néstor Octavio Majul"
+  },
+  "fuerzas_federales": {
+    "policia_federal_argentina": {
+      "jefe": "Comisario General Luis Alejandro Rollé",
+      "subjefe": "Comisario General Mariano José Giuffra"
+    },
+    "gendarmeria_nacional_argentina": {
+      "director_nacional": "Comandante General (R) Claudio Miguel Brilloni",
+      "subdirector_nacional": "Comandante General Aníbal Ariel Bronzetti"
+    },
+    "prefectura_naval_argentina": {
+      "prefecto_nacional_naval": "Prefecto General Guillermo José Giménez Pérez",
+      "subprefecto_nacional_naval": "Prefecto General Alejandro Annichini"
+    },
+    "policia_seguridad_aeroportuaria": {
+      "director_nacional": "Dr. Carlos Alberto Tonelli Banfi",
+      "subdirectora_nacional": "Comisionado General Verónica Valeria Paolino"
+    },
+    "servicio_penitenciario_federal": {
+      "director_nacional": "Inspector General Lic. Fernando Julián Martínez",
+      "subdirector_nacional": "Inspector General Lic. Diego Alejandro Morel"
+    }
+  },
+  "jurisdicciones_provinciales_y_caba": [
+    {
+      "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
+      "ministerio_seguridad": {
+        "titular": "Horacio Alberto Giménez",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de la Ciudad",
+        "jefe": "Comisario General Diego Ariel Casaló",
+        "subjefe": "Comisaria General Carla Mangiameli"
+      }
+    },
+    {
+      "jurisdiccion": "Buenos Aires (Provincia)",
+      "ministerio_seguridad": {
+        "titular": "Javier Alonso",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía Bonaerense",
+        "jefe": "Comisario General Javier Carlos Villar",
+        "subjefe": "Comisario General Héctor Conrado Cisneros"
+      }
+    },
+    {
+      "jurisdiccion": "Santa Fe",
+      "ministerio_seguridad": {
+        "titular": "Pablo Cococcioni",
+        "cargo": "Ministro de Justicia y Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de Santa Fe",
+        "jefe": "Director General Luis Pablo Martín Maldonado",
+        "subjefe": "Director General Carlos Duilio Pagano"
+      }
+    },
+    {
+      "jurisdiccion": "Córdoba",
+      "ministerio_seguridad": {
+        "titular": "Juan Pablo Quinteros",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de la Provincia de Córdoba",
+        "jefe": "Comisario General Lic. Marcelo Marín",
+        "subjefe": "Comisario General Ab. Lic. Alberto Bietti (Capital); Comisario General Lic. Iván Rey (Interior); Comisario General Lic. Federico Cisnero (Administrativo)"
+      }
+    },
+    {
+      "jurisdiccion": "Mendoza",
+      "ministerio_seguridad": {
+        "titular": "Mercedes Rus",
+        "cargo": "Ministra de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de Mendoza",
+        "jefe": "Comisario General (R) Marcelo Calipo",
+        "subjefe": "Comisario General (R) Roberto Favaro"
+      }
+    },
+    {
+      "jurisdiccion": "Tucumán",
+      "ministerio_seguridad": {
+        "titular": "Eugenio Agüero Gamboa",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de Tucumán",
+        "jefe": "Comisario General Joaquín Alfredo Girvau Olleta",
+        "subjefe": "Comisario General Roque Rodolfo Yñigo"
+      }
+    },
+    {
+      "jurisdiccion": "Chaco",
+      "ministerio_seguridad": {
+        "titular": "Hugo Daniel Matkovich",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía del Chaco",
+        "jefe": "Comisario General (R) Fernando Javier Romero",
+        "subjefe": "Comisario General Manuel Victoriano Silva"
+      }
+    },
+    {
+      "jurisdiccion": "Misiones",
+      "ministerio_seguridad": {
+        "titular": "Marcelo Gabriel Pérez",
+        "cargo": "Ministro de Gobierno"
+      },
+      "policia": {
+        "nombre": "Policía de Misiones",
+        "jefe": "Comisario General Sandro Alberto Martínez",
+        "subjefe": "Comisario General Lic. Marcos David López Asencio"
+      }
+    },
+    {
+      "jurisdiccion": "Salta",
+      "ministerio_seguridad": {
+        "titular": "Marcelo Ramón Domínguez",
+        "cargo": "Ministro de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de Salta",
+        "jefe": "Comisario General Diego Antonio Bustos",
+        "subjefe": "Comisario General Walter Osvaldo Toledo"
+      }
+    },
+    {
+      "jurisdiccion": "Corrientes",
+      "ministerio_seguridad": {
+        "titular": "Alfredo Oscar Vallejos",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de Corrientes",
+        "jefe": "Comisario General Miguel Ángel Leguizamón",
+        "subjefe": "Comisario General Walter Darío Aceval"
+      }
+    },
+    {
+      "jurisdiccion": "Entre Ríos",
+      "ministerio_seguridad": {
+        "titular": "Néstor Roncaglia",
+        "cargo": "Ministro de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de Entre Ríos",
+        "jefe": "Comisario General Claudio González",
+        "subjefe": "Comisario General Marcelo Clausich"
+      }
+    },
+    {
+      "jurisdiccion": "San Luis",
+      "ministerio_seguridad": {
+        "titular": "Nancy Sosa",
+        "cargo": "Ministra de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de San Luis",
+        "jefe": "Comisario General (R.V.) Dr. Juan Carlos Serrano",
+        "subjefe": "Comisario General Néstor Javier Miranda"
+      }
+    },
+    {
+      "jurisdiccion": "Jujuy",
+      "ministerio_seguridad": {
+        "titular": "Carlos Ariel Gil Urquiola",
+        "cargo": "Secretario de Seguridad Pública con funciones de ministro"
+      },
+      "policia": {
+        "nombre": "Policía de Jujuy",
+        "jefe": "Comisario General Joaquín Carrillo",
+        "subjefe": "Comisario General Federico Méndez"
+      }
+    },
+    {
+      "jurisdiccion": "Neuquén",
+      "ministerio_seguridad": {
+        "titular": "Matías Nicolini",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía del Neuquén",
+        "jefe": "Comisario General Carlos Tomás Díaz Pérez",
+        "subjefe": "Comisario General Walter Alberto San Martín"
+      }
+    },
+    {
+      "jurisdiccion": "Río Negro",
+      "ministerio_seguridad": {
+        "titular": "Daniel Jara",
+        "cargo": "Ministro de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de Río Negro",
+        "jefe": "Comisario General Daniel Antonio Bertazzo",
+        "subjefe": "Comisario General Elio Daniel Tapia"
+      }
+    },
+    {
+      "jurisdiccion": "Catamarca",
+      "ministerio_seguridad": {
+        "titular": "Gastón Venturini",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de Catamarca",
+        "jefe": "Comisario General Marcos Manuel Herrera",
+        "subjefe": "Comisario General Lic. Omar Gustavo Seiler"
+      }
+    },
+    {
+      "jurisdiccion": "Formosa",
+      "ministerio_seguridad": {
+        "titular": "Dr. Jorge Abel González",
+        "cargo": "Ministro de Gobierno, Justicia, Seguridad y Trabajo"
+      },
+      "policia": {
+        "nombre": "Policía de Formosa",
+        "jefe": "Comisario General Juan Moisés Villagra",
+        "subjefe": "Comisario General Norberto Rubén Mauri"
+      }
+    },
+    {
+      "jurisdiccion": "La Pampa",
+      "ministerio_seguridad": {
+        "titular": "Horacio Esteban Di Nápoli",
+        "cargo": "Ministro de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de La Pampa",
+        "jefe": "Comisario General (R) Claudio Cano",
+        "subjefe": "Comisario General Héctor Sosa (a cargo)"
+      }
+    },
+    {
+      "jurisdiccion": "La Rioja",
+      "ministerio_seguridad": {
+        "titular": "Miguel Ángel Zárate",
+        "cargo": "Ministro de Seguridad, Justicia y Derechos Humanos"
+      },
+      "policia": {
+        "nombre": "Policía de La Rioja",
+        "jefe": "Comisario General René Omar Molina",
+        "subjefe": "Comisario General Nelson Gustavo Sotomayor"
+      }
+    },
+    {
+      "jurisdiccion": "San Juan",
+      "ministerio_seguridad": {
+        "titular": "Enrique Delgado",
+        "cargo": "Secretario de Estado de Seguridad y Orden Público"
+      },
+      "policia": {
+        "nombre": "Policía de San Juan",
+        "jefe": "Comisario General (R) Néstor Marcelo Álvarez",
+        "subjefe": "Comisario General Marcelo Germán Videla"
+      }
+    },
+    {
+      "jurisdiccion": "Santa Cruz",
+      "ministerio_seguridad": {
+        "titular": "Pedro Prodromos",
+        "cargo": "Ministro de Seguridad"
+      },
+      "policia": {
+        "nombre": "Policía de Santa Cruz",
+        "jefe": "Comisario General Diego Martín Agüero",
+        "subjefe": "Comisario General Luis Alcides Bordón"
+      }
+    },
+    {
+      "jurisdiccion": "Santiago del Estero",
+      "ministerio_seguridad": {
+        "titular": "Dr. Marcelo Barbur",
+        "cargo": "Ministro de Gobierno, Seguridad y Culto"
+      },
+      "policia": {
+        "nombre": "Policía de Santiago del Estero",
+        "jefe": "Comisario General Lic. Laureano Francisco Silva",
+        "subjefe": "Comisario General Lic. Walter Guillermo Gómez"
+      }
+    },
+    {
+      "jurisdiccion": "Tierra del Fuego",
+      "ministerio_seguridad": {
+        "titular": "Lucía Rossi",
+        "cargo": "Ministerio de Bienestar Ciudadano y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía de Tierra del Fuego",
+        "jefe": "Comisario General Lic. Jacinto Rolón",
+        "subjefe": "Comisario General Lic. Oscar Alfredo Barrios Kogan"
+      }
+    },
+    {
+      "jurisdiccion": "Chubut",
+      "ministerio_seguridad": {
+        "titular": "Dr. Héctor Iturrioz",
+        "cargo": "Ministro de Seguridad y Justicia"
+      },
+      "policia": {
+        "nombre": "Policía del Chubut",
+        "jefe": "Comisario General Andrés Antonio García",
+        "subjefe": "Comisario General Mauricio Zabala"
+      }
+    }
+  ]
+}

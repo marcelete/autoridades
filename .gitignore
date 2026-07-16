@@ -1,0 +1,19 @@
+# Salidas generadas por cada corrida (JSON/CSV/reportes con timestamp)
+output/
+
+# Secretos: nunca versionar el .env con las API keys reales
+.env
+
+# Archivos temporales de Excel (lock que crea Excel mientras el libro está abierto)
+~$*.xlsx
+~$*.xls
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sistema operativo
+Thumbs.db
+desktop.ini
