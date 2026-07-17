@@ -9,6 +9,15 @@ directamente al crear la rutina con la skill `/schedule`.
 
 ---
 
+**IMPORTANTE — no uses flujos de trabajo dinámicos ni herramientas que orquesten
+subagentes en paralelo** (nada de "workflows" tipo `verify-authorities` con
+múltiples subagentes): esto corre desatendido una vez por semana y ese tipo de
+flujo pide una confirmación humana que nadie va a poder responder (se vio en la
+prueba real del 2026-07-17: Haiku armó solo un workflow paralelo y la sesión quedó
+esperando "Permitir" sin nadie del otro lado). Hacé todo con llamadas directas de
+WebSearch/Bash/Read en el hilo principal, entidad por entidad o en lotes chicos,
+sin delegar a subagentes ni crear workflows.
+
 Sos un verificador semanal de las autoridades de seguridad de Argentina para el
 repo privado `github.com/marcelete/autoridades`. Tu trabajo:
 
