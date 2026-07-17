@@ -4,7 +4,7 @@ Este archivo guía a Claude Code (claude.ai/code) al trabajar con el código de 
 
 ## Qué es esto
 
-SIFCOP — una herramienta de **un solo script** que monitorea cambios en las autoridades de seguridad de Argentina: 5 fuerzas federales (jefe + subjefe) y 24 jurisdicciones provinciales/CABA (ministro de seguridad + jefe de policía + subjefe). Busca en la web, extrae datos estructurados con un LLM, e informa cualquier cambio de autoridades contra un archivo de referencia. Corre **una vez cada 7 días**: se puede ejecutar a mano, o dejar que la Tarea Programada lo verifique al iniciar sesión (una vez por día) y sólo busque si pasaron los 7 días.
+SIFCOP — una herramienta de **un solo script** que monitorea cambios en las autoridades de seguridad de Argentina: 5 fuerzas federales (jefe + subjefe) y 24 jurisdicciones provinciales/CABA (gobernador o jefe/a de gobierno + ministro de seguridad + jefe de policía + subjefe). Busca en la web, extrae datos estructurados con un LLM, e informa cualquier cambio de autoridades contra un archivo de referencia. Corre **una vez cada 7 días**: se puede ejecutar a mano, o dejar que la Tarea Programada lo verifique al iniciar sesión (una vez por día) y sólo busque si pasaron los 7 días.
 
 El código, los prompts, los archivos de salida y los términos del dominio están todos en **español**. Mantené los nuevos strings visibles al usuario en español para que coincidan.
 
@@ -54,6 +54,8 @@ Todo el pipeline vive en [buscar_autoridades.py](buscar_autoridades.py). Procesa
 
 `llamar_groq()` endurece deliberadamente el parseo de JSON porque el modelo se porta mal: `_extraer_primer_json()` cuenta llaves para tomar el primer objeto (el modelo a veces emite dos), un regex saca caracteres de control, y otro trunca URLs desbocadas. Si cambiás los prompts o el modelo, mantené este parseo defensivo.
 
+**Limite de tokens por minuto (TPM) de Groq — 12.000, no solo de RPM/RPD.** Detectado en una corrida real (2026-07-16): la organización de Groq tiene un tope de 12.000 tokens por minuto en `on_demand`, y un solo pedido (prompt + `MAX_TOKENS` de completion) puede superarlo si el contexto de búsqueda es grande — pasa fácil con 5 entidades federales o varias queries por provincia. El reintento automático de `llamar_groq()` **no sirve para este error**: como el tamaño del pedido no cambia entre intentos, un HTTP 413 por TPM falla igual las 3 veces y esa consulta queda vacía (sin gastar más Tavily, pero sin datos). Por eso `construir_contexto()` acota el contexto **por entidad** a `TAVILY_CHARS_POR_ENTIDAD` (no solo por resultado individual con `TAVILY_CHARS_POR_RESULTADO`) — así el total escala con la cantidad de entidades de forma acotada en vez de crecer sin límite, y `MAX_TOKENS` se bajó de 6000 a 3000. Si volvés a subir `TAVILY_MAX_RESULTS`, la cantidad de queries por entidad, o `MAX_TOKENS`, recalculá contra este límite (podés estimar con `construir_contexto()` + `len(prompt)//4` antes de correr en serio).
+
 ### La comparación y el gotcha de `maestro.json`
 
 `buscar_referencia()` elige la referencia por orden de prioridad:
@@ -65,19 +67,21 @@ El maestro [maestro.json](maestro.json) vive en la **raíz del proyecto**. Antes
 
 El esquema anidado del maestro difiere del esquema de salida por consulta, así que dos adaptadores los normalizan a un índice común `{jurisdiccion: {cargo: nombre}}`: `_indice_desde_maestro()` vs `_indice_desde_bloques()`. La comparación coteja **apellidos normalizados** (sin tildes, ignorando `NO ENCONTRADO`/vacío) — esto suprime específicamente los falsos positivos por nombre-completo-vs-apellido y por diferencias de tildes. Conservá eso al tocar `comparar_con_referencia()`. Limitación conocida: comparar sólo el último apellido puede **ocultar un cambio real** cuando el apellido coincide pero cambia la persona (p. ej. "Juan Pérez" → "Marcelo Pérez").
 
+**Gobernador — placeholder vacío a propósito.** Cada jurisdicción de `maestro.json` tiene ahora un bloque `"gobernador": {"titular": "", "cargo": "..."}` (CABA: `"Jefe de Gobierno"`; el resto: `"Gobernador"`). El `titular` se dejó **vacío deliberadamente** en vez de completarlo con un nombre adivinado — nadie verificó esos 24 nombres a mano todavía. Mientras esté vacío, `_indice_desde_maestro()` lo trata como `NO ENCONTRADO`, así que **la primera corrida va a marcar los 24 gobernadores como "diferencia"** (no es un cambio real, es el primer dato). Verificá esos 24 nombres contra fuente oficial y completá `titular` en el maestro para que las corridas siguientes comparen de verdad.
+
 Cuando hay diferencias, además del reporte en texto, `mostrar_alerta_cambios()` abre una **ventana emergente con tkinter** (stdlib, sin dependencias) al final de `main()` — pensada para la corrida desatendida de la tarea programada, para que el cambio no pase desapercibido aunque no haya consola visible. Se auto-cierra a los 30 minutos si nadie la ve. Desactivable con `--sin-alerta` (el reporte en texto se guarda igual). Si no hay sesión gráfica disponible, avisa por consola y sigue sin cortar la corrida.
 
 ### La fuente verificada es el JSON, no el Excel
 
 El dato de referencia validado a mano es **[maestro.json](maestro.json)** (82 datos, corregidos según la lista de "Datos verificados con errores" de [resumen proyecto.md](resumen%20proyecto.md)). El Excel `Autoridades de Min. Seg y FFSS...xlsx` es el **listado original y está desactualizado**: todavía tiene valores viejos que el maestro ya corrigió (Corrientes: Gaya → Vallejos; Jujuy: Corro → Gil Urquiola; Catamarca: Natella/Córdoba/Sánchez → Venturini/Herrera/Seiler; Santiago del Estero: B. Herrera → Barbur; La Pampa subjefe: Calzada → Sosa; Salta ministro difiere; etc.). Al sincronizar o regenerar, **el JSON manda sobre el Excel**.
 
-Estructura del Excel (1 hoja `Jurisdicciones Provinciales y C...`, 30 filas de datos): columnas `Jurisdicción | Ministro / Cargo | Fuente | Fuerza | Jefe | Subjefe | Fuente 2 | Fecha Actualización`. Filas 2–25 = provincias/CABA; filas 26–30 = las 5 fuerzas federales.
+Estructura del Excel (1 hoja `Jurisdicciones Provinciales y C...`, 30 filas de datos): columnas `Jurisdicción | Ministro / Cargo | Fuente | Fuerza | Jefe | Subjefe | Fuente 2 | Fecha Actualización`. Filas 2–25 = provincias/CABA; filas 26–30 = las 5 fuerzas federales. Esta hoja original **no tiene** columna de gobernador — es el listado viejo, sin tocar; la columna nueva sólo aparece en las hojas que genera el script (ver Salidas).
 
 ### Salidas
 
 Todas bajo `output/` con timestamp: `autoridades_<ts>.json` / `.csv` (resultados principales), `fuentes_oficiales_<ts>.csv` / `.txt` (páginas oficiales detectadas), `diferencias_<ts>.txt` (reporte de cambios), `log_tokens.txt` y `log_ejecucion.txt` (se van agregando). Si hay diferencias, también se abre una ventana emergente (ver más abajo).
 
-**Además**, cada corrida agrega una **hoja nueva al Excel** vía xlwings (`guardar_en_excel()`), llamada `autoridades_AAAAMMDD`, con el layout de 8 columnas y las celdas cambiadas resaltadas en amarillo. La salida a Excel está aislada en `try/except`: si Excel no está disponible o el libro está abierto, se avisa pero no se pierde el JSON/CSV. `_bloques_desde_maestro()` convierte el maestro al mismo formato de bloques para poder exportarlo (`--excel-desde-maestro`).
+**Además**, cada corrida agrega una **hoja nueva al Excel** vía xlwings (`guardar_en_excel()`), llamada `autoridades_AAAAMMDD`, con el layout de **9 columnas** (`Jurisdicción | Gobernador | Ministro / Cargo | Fuente | Fuerza | Jefe | Subjefe | Fuente 2 | Fecha Actualización` — la columna `Gobernador` se agregó después del listado original) y las celdas cambiadas resaltadas en amarillo (`COL_POR_CARGO` mapea `Gobernador/Ministro/Jefe/Subjefe` a su columna). La salida a Excel está aislada en `try/except`: si Excel no está disponible o el libro está abierto, se avisa pero no se pierde el JSON/CSV. `_bloques_desde_maestro()` convierte el maestro al mismo formato de bloques para poder exportarlo (`--excel-desde-maestro`), incluyendo el gobernador si ya está completado en el maestro.
 
 ## Dos implementaciones — sabé cuál está viva
 
@@ -90,7 +94,7 @@ Las API keys se leen **sólo** del entorno o de un archivo `.env` junto al scrip
 
 ## Restricciones y presupuesto
 
-**Presupuesto cero — no se compran tokens.** Todo el pipeline depende de free tiers: Groq (LLM) y Tavily (búsqueda web, 1.000 créditos/mes). Cada corrida gasta ~46 búsquedas Tavily × 2 créditos (`search_depth="advanced"`) ≈ **~92 créditos**. Con la cadencia de **7 días** son ~4 corridas/mes ≈ **~400 créditos**, cómodo bajo el tope. Correrlo en cada arranque de la PC agotaría los créditos en días, por eso existe la doble protección: **chequeo diario** (`ya_se_chequeo_hoy` / `MARCADOR_CHEQUEO`) + **cadencia de N días** (`DIAS_ENTRE_CORRIDAS`, `dias_desde_ultima_corrida`). No bajar `DIAS_ENTRE_CORRIDAS` sin recalcular el presupuesto.
+**Presupuesto cero — no se compran tokens.** Todo el pipeline depende de free tiers: Groq (LLM) y Tavily (búsqueda web, 1.000 créditos/mes). Cada corrida hace 106 búsquedas Tavily (5 fuerzas federales × [1 query + 1 oficial] + 24 provincias/CABA × [3 queries — ministro, policía, gobernador — + 1 oficial]) × 2 créditos (`search_depth="advanced"`) ≈ **~212 créditos**. Con la cadencia de **7 días** son ~4,3 corridas/mes ≈ **~910 créditos**, todavía bajo el tope de 1.000 pero con **margen mucho más ajustado** que antes de agregar la consulta de gobernador (era ~164 créditos/corrida ≈ ~700/mes). Correrlo en cada arranque de la PC agotaría los créditos en días, por eso existe la doble protección: **chequeo diario** (`ya_se_chequeo_hoy` / `MARCADOR_CHEQUEO`) + **cadencia de N días** (`DIAS_ENTRE_CORRIDAS`, `dias_desde_ultima_corrida`). No bajar `DIAS_ENTRE_CORRIDAS` ni agregar más búsquedas por entidad sin recalcular el presupuesto — con el margen actual, un `--force` de más en el mes ya empuja cerca del tope.
 
 ## Mejoras ya implementadas (antes eran roadmap)
 
@@ -99,9 +103,11 @@ Las API keys se leen **sólo** del entorno o de un archivo `.env` junto al scrip
 - **Fix del maestro:** `buscar_referencia()` ahora encuentra el maestro también en la raíz.
 - **Fix `.lstrip("www.")`:** reemplazado por el helper `_dominio()`.
 - **Seguridad:** las API keys salieron del código a un `.env` gitignoreado (`_cargar_env()`).
+- **Gobernadores:** se agregó búsqueda + extracción del gobernador/a de cada provincia (jefe/a de gobierno en CABA) — nueva query de Tavily por jurisdicción, campos `gobernador_cargo`/`gobernador_nombre` en `PROMPT_PROVINCIALES`, columna en el CSV y en la hoja de Excel, y entrada en la comparación (`_campos_nombre`, `_indice_desde_maestro`).
 
 ## Pendiente / ideas a futuro
 
 - **Verificación asistida por Claude:** cuando una corrida marca diferencias, abrir una sesión de Claude Code y verificar cada cambio contra fuentes oficiales (WebSearch, incluido en el plan, sin API paga) antes de tocar el maestro.
 - **Rotar las API keys** que estuvieron hardcodeadas (siguen siendo válidas; conviene regenerarlas por las dudas).
 - **Limitación de la comparación por apellido:** puede ocultar cambios de persona con mismo apellido (ver sección de comparación).
+- **Completar `gobernador.titular`** en `maestro.json` (los 24 quedaron vacíos a propósito, ver sección de comparación) una vez verificados a mano contra fuente oficial.

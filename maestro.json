@@ -32,6 +32,10 @@
   "jurisdicciones_provinciales_y_caba": [
     {
       "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Jefe de Gobierno"
+      },
       "ministerio_seguridad": {
         "titular": "Horacio Alberto Giménez",
         "cargo": "Ministro de Seguridad"
@@ -44,6 +48,10 @@
     },
     {
       "jurisdiccion": "Buenos Aires (Provincia)",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Javier Alonso",
         "cargo": "Ministro de Seguridad"
@@ -56,6 +64,10 @@
     },
     {
       "jurisdiccion": "Santa Fe",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Pablo Cococcioni",
         "cargo": "Ministro de Justicia y Seguridad"
@@ -68,6 +80,10 @@
     },
     {
       "jurisdiccion": "Córdoba",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Juan Pablo Quinteros",
         "cargo": "Ministro de Seguridad"
@@ -80,6 +96,10 @@
     },
     {
       "jurisdiccion": "Mendoza",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Mercedes Rus",
         "cargo": "Ministra de Seguridad y Justicia"
@@ -92,6 +112,10 @@
     },
     {
       "jurisdiccion": "Tucumán",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Eugenio Agüero Gamboa",
         "cargo": "Ministro de Seguridad"
@@ -104,6 +128,10 @@
     },
     {
       "jurisdiccion": "Chaco",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Hugo Daniel Matkovich",
         "cargo": "Ministro de Seguridad"
@@ -116,6 +144,10 @@
     },
     {
       "jurisdiccion": "Misiones",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Marcelo Gabriel Pérez",
         "cargo": "Ministro de Gobierno"
@@ -128,6 +160,10 @@
     },
     {
       "jurisdiccion": "Salta",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Marcelo Ramón Domínguez",
         "cargo": "Ministro de Seguridad y Justicia"
@@ -140,6 +176,10 @@
     },
     {
       "jurisdiccion": "Corrientes",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Alfredo Oscar Vallejos",
         "cargo": "Ministro de Seguridad"
@@ -152,6 +192,10 @@
     },
     {
       "jurisdiccion": "Entre Ríos",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Néstor Roncaglia",
         "cargo": "Ministro de Seguridad y Justicia"
@@ -164,6 +208,10 @@
     },
     {
       "jurisdiccion": "San Luis",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Nancy Sosa",
         "cargo": "Ministra de Seguridad"
@@ -176,6 +224,10 @@
     },
     {
       "jurisdiccion": "Jujuy",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Carlos Ariel Gil Urquiola",
         "cargo": "Secretario de Seguridad Pública con funciones de ministro"
@@ -188,6 +240,10 @@
     },
     {
       "jurisdiccion": "Neuquén",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Matías Nicolini",
         "cargo": "Ministro de Seguridad"
@@ -200,6 +256,10 @@
     },
     {
       "jurisdiccion": "Río Negro",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Daniel Jara",
         "cargo": "Ministro de Seguridad y Justicia"
@@ -212,6 +272,10 @@
     },
     {
       "jurisdiccion": "Catamarca",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Gastón Venturini",
         "cargo": "Ministro de Seguridad"
@@ -224,6 +288,10 @@
     },
     {
       "jurisdiccion": "Formosa",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Dr. Jorge Abel González",
         "cargo": "Ministro de Gobierno, Justicia, Seguridad y Trabajo"
@@ -236,6 +304,10 @@
     },
     {
       "jurisdiccion": "La Pampa",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Horacio Esteban Di Nápoli",
         "cargo": "Ministro de Seguridad y Justicia"
@@ -248,6 +320,10 @@
     },
     {
       "jurisdiccion": "La Rioja",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Miguel Ángel Zárate",
         "cargo": "Ministro de Seguridad, Justicia y Derechos Humanos"
@@ -260,6 +336,10 @@
     },
     {
       "jurisdiccion": "San Juan",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Enrique Delgado",
         "cargo": "Secretario de Estado de Seguridad y Orden Público"
@@ -272,6 +352,10 @@
     },
     {
       "jurisdiccion": "Santa Cruz",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Pedro Prodromos",
         "cargo": "Ministro de Seguridad"
@@ -284,6 +368,10 @@
     },
     {
       "jurisdiccion": "Santiago del Estero",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Dr. Marcelo Barbur",
         "cargo": "Ministro de Gobierno, Seguridad y Culto"
@@ -296,6 +384,10 @@
     },
     {
       "jurisdiccion": "Tierra del Fuego",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Lucía Rossi",
         "cargo": "Ministerio de Bienestar Ciudadano y Justicia"
@@ -308,6 +400,10 @@
     },
     {
       "jurisdiccion": "Chubut",
+      "gobernador": {
+        "titular": "",
+        "cargo": "Gobernador"
+      },
       "ministerio_seguridad": {
         "titular": "Dr. Héctor Iturrioz",
         "cargo": "Ministro de Seguridad y Justicia"

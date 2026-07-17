@@ -70,12 +70,13 @@ GROQ_API_KEY   = os.environ.get("GROQ_API_KEY",   "")
 TAVILY_API_KEY = os.environ.get("TAVILY_API_KEY", "")
 
 MODELO                = "llama-3.3-70b-versatile"
-MAX_TOKENS            = 6000
+MAX_TOKENS            = 3000  # limite de la organizacion en Groq: 12000 TPM (prompt+completion)
 MAX_REINTENTOS        = 3
 PAUSA_ENTRE_CONSULTAS = 35   # segundos entre consultas (margen para rate limit Groq)
 PAUSA_ENTRE_BUSQUEDAS = 2    # segundos entre entidades en Tavily
 TAVILY_MAX_RESULTS    = 7
-TAVILY_CHARS_POR_RESULTADO = 1200  # truncar contenido de cada resultado
+TAVILY_CHARS_POR_RESULTADO = 1100  # truncar contenido de cada resultado
+TAVILY_CHARS_POR_ENTIDAD   = 4200  # tope de contexto por entidad (ver construir_contexto)
 
 # Cadencia: se corre una vez cada N dias. La tarea programada verifica al iniciar
 # sesion (una vez por dia, modo --auto), pero solo busca si ya pasaron estos dias.
@@ -170,9 +171,10 @@ de seguridad de las siguientes provincias de Argentina:
 === FIN DE RESULTADOS ===
 
 Basandote UNICAMENTE en los resultados anteriores, extrae para cada provincia:
-1. El Ministro o Secretario de Seguridad (cargo politico equivalente)
-2. El Jefe de la Policia provincial (Jefe, Comisario General, Director General, etc.)
-3. El Subjefe de la Policia provincial
+1. El Gobernador/a (en CABA es el Jefe/a de Gobierno)
+2. El Ministro o Secretario de Seguridad (cargo politico equivalente)
+3. El Jefe de la Policia provincial (Jefe, Comisario General, Director General, etc.)
+4. El Subjefe de la Policia provincial
 
 Responde UNICAMENTE con un JSON valido con esta estructura, sin texto adicional:
 {{
@@ -181,6 +183,8 @@ Responde UNICAMENTE con un JSON valido con esta estructura, sin texto adicional:
   "registros": [
     {{
       "jurisdiccion": "nombre de la provincia",
+      "gobernador_cargo": "Gobernador/a (o 'Jefe/a de Gobierno' para CABA)",
+      "gobernador_nombre": "nombre completo",
       "ministro_cargo": "titulo exacto del cargo politico",
       "ministro_nombre": "nombre completo",
       "jefe_policia_cargo": "titulo exacto",
@@ -338,9 +342,10 @@ def _campos_nombre(reg, seccion):
         }
     else:
         return {
-            "Ministro": reg.get("ministro_nombre", ""),
-            "Jefe":     reg.get("jefe_policia_nombre", ""),
-            "Subjefe":  reg.get("subjefe_policia_nombre", ""),
+            "Gobernador": reg.get("gobernador_nombre", ""),
+            "Ministro":   reg.get("ministro_nombre", ""),
+            "Jefe":       reg.get("jefe_policia_nombre", ""),
+            "Subjefe":    reg.get("subjefe_policia_nombre", ""),
         }
 
 
@@ -416,6 +421,7 @@ def _queries_para_entidad(entidad, seccion):
         return [f'jefe subjefe "{entidad}" Argentina {anio} autoridades designado']
     else:
         return [
+            f'gobernador jefe de gobierno "{entidad}" Argentina {anio} actual mandato',
             f'ministro secretario seguridad "{entidad}" provincia Argentina {anio} autoridades',
             f'jefe policia comisario general "{entidad}" provincia Argentina {anio} asumio cargo',
         ]
@@ -472,12 +478,17 @@ def buscar_entidad(entidad, seccion, tavily_client):
 
 def construir_contexto(resultados_por_entidad):
     """Convierte el dict {entidad: [resultados]} en texto para el prompt de Groq.
-    Las fuentes oficiales aparecen primero y marcadas con [FUENTE OFICIAL GOB/GOV]."""
+    Las fuentes oficiales aparecen primero y marcadas con [FUENTE OFICIAL GOB/GOV].
+    El contexto de cada entidad se acota a TAVILY_CHARS_POR_ENTIDAD para que el total
+    enviado a Groq (que crece con la cantidad de entidades por consulta) no supere el
+    limite de tokens por minuto (TPM) de la organizacion — un grupo entero puede fallar
+    con HTTP 413 si el prompt es demasiado grande, y reintentar no ayuda porque el
+    tamano del pedido no cambia entre intentos."""
     contexto = ""
     for entidad, resultados in resultados_por_entidad.items():
         if not resultados:
             continue
-        contexto += f"\n--- {entidad} ---\n"
+        bloque = f"\n--- {entidad} ---\n"
         oficiales   = [r for r in resultados if     _es_fuente_oficial(r.get("url", ""))]
         no_oficiales = [r for r in resultados if not _es_fuente_oficial(r.get("url", ""))]
         for r in oficiales + no_oficiales:
@@ -487,12 +498,13 @@ def construir_contexto(resultados_por_entidad):
             contenido = r.get("content", "")[:TAVILY_CHARS_POR_RESULTADO]
             dominio = _dominio(url)
             tag = " [FUENTE OFICIAL GOB/GOV]" if es_of else ""
-            contexto += (
+            bloque += (
                 f"Fuente: {dominio}{tag}\n"
                 f"Titulo: {titulo}\n"
                 f"URL: {url}\n"
                 f"Contenido: {contenido}\n\n"
             )
+        contexto += bloque[:TAVILY_CHARS_POR_ENTIDAD]
     return contexto.strip()
 
 
@@ -602,6 +614,9 @@ def mostrar_resultados(datos):
             if n2 and n2 != "NO ENCONTRADO":
                 print(f"        Subjefe: [{reg.get('cargo_autoridad_2','')}] {n2}")
         else:
+            gob = reg.get("gobernador_nombre", "")
+            if gob and gob != "NO ENCONTRADO":
+                print(f"        Gobernador: [{reg.get('gobernador_cargo','')}] {gob}")
             print(f"        Ministro: [{reg.get('ministro_cargo','')}] "
                   f"{reg.get('ministro_nombre','')}")
             print(f"        Jefe    : [{reg.get('jefe_policia_cargo','')}] "
@@ -661,9 +676,10 @@ def _indice_desde_maestro(maestro):
         titular = jur.get("ministerio_seguridad", {}).get("titular", "")
         policia  = jur.get("policia", {})
         indice[nombre_jur] = {
-            "Ministro": titular,
-            "Jefe":     policia.get("jefe", ""),
-            "Subjefe":  policia.get("subjefe", ""),
+            "Gobernador": jur.get("gobernador", {}).get("titular", ""),
+            "Ministro":   titular,
+            "Jefe":       policia.get("jefe", ""),
+            "Subjefe":    policia.get("subjefe", ""),
         }
     return indice
 
@@ -854,6 +870,7 @@ def guardar_resultados(todos_los_datos, timestamp, tokens_totales):
         writer = csv.writer(f)
         writer.writerow([
             "Seccion", "Jurisdiccion",
+            "Gobernador Cargo", "Gobernador Nombre",
             "Responsable Politico Cargo", "Responsable Politico Nombre",
             "Jefe Cargo", "Jefe Nombre",
             "Subjefe Cargo", "Subjefe Nombre",
@@ -868,6 +885,7 @@ def guardar_resultados(todos_los_datos, timestamp, tokens_totales):
                         "Fuerzas Federales",
                         reg.get("jurisdiccion", ""),
                         "", "",
+                        "", "",
                         reg.get("cargo_autoridad_1", ""),
                         reg.get("nombre_autoridad_1", ""),
                         reg.get("cargo_autoridad_2", ""),
@@ -880,6 +898,8 @@ def guardar_resultados(todos_los_datos, timestamp, tokens_totales):
                     writer.writerow([
                         "Policias Provinciales",
                         reg.get("jurisdiccion", ""),
+                        reg.get("gobernador_cargo", ""),
+                        reg.get("gobernador_nombre", ""),
                         reg.get("ministro_cargo", ""),
                         reg.get("ministro_nombre", ""),
                         reg.get("jefe_policia_cargo", ""),
@@ -910,13 +930,13 @@ def guardar_resultados(todos_los_datos, timestamp, tokens_totales):
 # SALIDA A EXCEL (xlwings) — una hoja nueva por corrida
 # =============================================================================
 
-# Encabezado que replica el layout historico del libro (8 columnas)
+# Encabezado que replica el layout historico del libro (9 columnas)
 EXCEL_ENCABEZADO = [
-    "Jurisdicción", "Ministro / Cargo", "Fuente", "Fuerza",
+    "Jurisdicción", "Gobernador", "Ministro / Cargo", "Fuente", "Fuerza",
     "Jefe", "Subjefe", "Fuente 2", "Fecha Actualización",
 ]
 # Que columna (1-indexed) resaltar segun el cargo que cambio
-COL_POR_CARGO = {"Ministro": 2, "Jefe": 5, "Subjefe": 6}
+COL_POR_CARGO = {"Gobernador": 2, "Ministro": 3, "Jefe": 6, "Subjefe": 7}
 COLOR_CAMBIO  = (255, 235, 156)   # amarillo suave
 
 
@@ -945,10 +965,13 @@ def _bloques_desde_maestro(maestro):
 
     registros_prov = []
     for jur in maestro.get("jurisdicciones_provinciales_y_caba", []):
+        gob = jur.get("gobernador", {})
         ms  = jur.get("ministerio_seguridad", {})
         pol = jur.get("policia", {})
         registros_prov.append({
             "jurisdiccion":          jur.get("jurisdiccion", ""),
+            "gobernador_cargo":      gob.get("cargo", ""),
+            "gobernador_nombre":     gob.get("titular", ""),
             "ministro_cargo":        ms.get("cargo", ""),
             "ministro_nombre":       ms.get("titular", ""),
             "jefe_policia_cargo":    "",
@@ -972,6 +995,7 @@ def _fila_excel(reg, seccion, fecha_txt):
     if seccion == "fuerzas_federales":
         return [
             "Federal",
+            "",                                    # Gobernador (no aplica a fuerzas)
             "",                                    # Ministro / Cargo (no aplica a fuerzas)
             reg.get("fuente_url", ""),
             reg.get("jurisdiccion", ""),           # Fuerza
@@ -980,11 +1004,17 @@ def _fila_excel(reg, seccion, fecha_txt):
             "",                                    # Fuente 2
             fecha_txt,
         ]
+    gobernador      = reg.get("gobernador_nombre", "")
+    gobernador_cargo = reg.get("gobernador_cargo", "")
+    gobernador_txt  = (f"{gobernador} ({gobernador_cargo})"
+                        if gobernador_cargo and gobernador_cargo != "NO ENCONTRADO"
+                        else gobernador)
     ministro = reg.get("ministro_nombre", "")
     cargo    = reg.get("ministro_cargo", "")
     ministro_cargo = f"{ministro} ({cargo})" if cargo and cargo != "NO ENCONTRADO" else ministro
     return [
         reg.get("jurisdiccion", ""),
+        gobernador_txt,
         ministro_cargo,
         reg.get("fuente_url", ""),
         reg.get("fuerza", ""),                     # nombre de la fuerza (viene del maestro; vacio en corrida)
