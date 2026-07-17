@@ -1,5 +1,5 @@
 {
-  "fecha_actualizacion": "2026-04-23",
+  "fecha_actualizacion": "2026-07-17",
   "pais": "Argentina",
   "ministerio_seguridad_nacion": {
     "ministra": "Alejandra Susana Monteoliva",
@@ -25,7 +25,7 @@
       "subdirectora_nacional": "Comisionado General Verónica Valeria Paolino"
     },
     "servicio_penitenciario_federal": {
-      "director_nacional": "Inspector General Lic. Fernando Julián Martínez",
+      "director_nacional": "Juan Eduardo Velarde",
       "subdirector_nacional": "Inspector General Lic. Diego Alejandro Morel"
     }
   },
@@ -165,7 +165,7 @@
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
-        "titular": "Marcelo Ramón Domínguez",
+        "titular": "Nicolás Avellaneda",
         "cargo": "Ministro de Seguridad y Justicia"
       },
       "policia": {
@@ -277,7 +277,7 @@
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
-        "titular": "Gastón Venturini",
+        "titular": "Dr. Fernando Monguillot",
         "cargo": "Ministro de Seguridad"
       },
       "policia": {
@@ -373,7 +373,7 @@
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
-        "titular": "Dr. Marcelo Barbur",
+        "titular": "Bernardo Herrera",
         "cargo": "Ministro de Gobierno, Seguridad y Culto"
       },
       "policia": {
