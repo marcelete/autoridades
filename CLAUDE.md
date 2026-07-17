@@ -104,6 +104,7 @@ Las API keys se leen **sólo** del entorno o de un archivo `.env` junto al scrip
 - **Fix `.lstrip("www.")`:** reemplazado por el helper `_dominio()`.
 - **Seguridad:** las API keys salieron del código a un `.env` gitignoreado (`_cargar_env()`).
 - **Gobernadores:** se agregó búsqueda + extracción del gobernador/a de cada provincia (jefe/a de gobierno en CABA) — nueva query de Tavily por jurisdicción, campos `gobernador_cargo`/`gobernador_nombre` en `PROMPT_PROVINCIALES`, columna en el CSV y en la hoja de Excel, y entrada en la comparación (`_campos_nombre`, `_indice_desde_maestro`).
+- **Repo conectado a GitHub** (`github.com/marcelete/autoridades`, privado) y **rutina semanal en la nube** (`/schedule`, ver [AUTOMATIZACION.md](AUTOMATIZACION.md) y [rutina_verificacion_semanal.md](rutina_verificacion_semanal.md)) que verifica el maestro contra fuentes oficiales vía WebSearch y propone PRs — complementa, no reemplaza, a Tavily+Groq.
 
 ## Pendiente / ideas a futuro
 
@@ -111,3 +112,4 @@ Las API keys se leen **sólo** del entorno o de un archivo `.env` junto al scrip
 - **Rotar las API keys** que estuvieron hardcodeadas (siguen siendo válidas; conviene regenerarlas por las dudas).
 - **Limitación de la comparación por apellido:** puede ocultar cambios de persona con mismo apellido (ver sección de comparación).
 - **Completar `gobernador.titular`** en `maestro.json` (los 24 quedaron vacíos a propósito, ver sección de comparación) una vez verificados a mano contra fuente oficial.
+- **Posible reemplazo total de Tavily+Groq por un agente Claude:** si la rutina semanal en la nube (ver `AUTOMATIZACION.md`) demuestra ser consistentemente más precisa que Groq/llama-3.3-70b (menos "NO ENCONTRADO", detecta fuentes desactualizadas que Groq no detectó — ver casos Catamarca/CABA de 2026-07-16), evaluar migrar toda la recolección semanal a un agente Claude. Probablemente tendría que correr localmente (Task Scheduler + `claude` en modo headless) para no perder el acceso al Excel, que un agente en la nube no puede tocar. No implementar sin evidencia real de varias corridas de la rutina complementaria primero.

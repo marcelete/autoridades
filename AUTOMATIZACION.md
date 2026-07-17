@@ -77,3 +77,38 @@ Cuando `diferencias_<timestamp>.txt` marque un cambio, **verificalo antes de toc
 maestro**. Podés abrir una sesión de Claude Code y pedirle que confirme ese cambio
 puntual contra la fuente oficial (búsqueda web incluida en el plan, sin API paga).
 Recién ahí actualizás `maestro.json`.
+
+## Rutina semanal de verificación en la nube (2026-07-17)
+
+Además de la verificación manual de arriba, hay una **rutina automática** creada con
+la skill `/schedule` de Claude Code que hace ese mismo trabajo sola, una vez por
+semana, sin gastar créditos de Tavily/Groq (usa el plan de Claude del usuario, no una
+API separada). El prompt completo que usa está en
+[rutina_verificacion_semanal.md](rutina_verificacion_semanal.md).
+
+**Qué hace:** lee `maestro.json` del repo `github.com/marcelete/autoridades` (privado),
+verifica con WebSearch las 29 entidades/~110 campos, y para cada uno reporta
+Confirmado / Cambió / Dudoso. Para los campos "Cambió" con confianza alta (2+ fuentes
+independientes y recientes) abre un **Pull Request** con la edición puntual — nunca
+escribe directo a `main`. El Excel **no** se actualiza desde la nube (no hay Excel en
+un sandbox en la nube); después de mergear un PR hay que correr localmente:
+
+```bash
+python buscar_autoridades.py --excel-desde-maestro
+```
+
+**Modelo:** arranca con Haiku 4.5 (para minimizar consumo de tokens en una tarea
+semanal recurrente). Si el reporte muestra la misma falla que tuvo Groq/llama-3.3-70b
+(poco recall, no distingue fuentes desactualizadas), reconfigurar la rutina a
+Sonnet 5 con effort alto — se puede editar sin recrearla desde cero, vía la propia
+skill `/schedule`.
+
+**Dónde ver los resultados:** en el historial de la rutina en Claude.ai (`/schedule`
+también permite listarlas y ver corridas pasadas). Este mecanismo es independiente de
+la Tarea Programada de Windows — sigue corriendo aunque la PC esté apagada.
+
+**Posible evolución futura** (no implementada todavía, ver `CLAUDE.md`): si esta
+rutina demuestra ser consistentemente mejor que Tavily+Groq, evaluar reemplazar todo
+el pipeline de recolección semanal por un agente Claude — probablemente corriendo
+localmente (Task Scheduler + `claude` en modo headless) para no perder el acceso al
+Excel, que la nube no puede tocar.
