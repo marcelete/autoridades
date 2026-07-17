@@ -1,0 +1,286 @@
+{
+  "fecha_corrida": "2026-07-17T23:00:00Z",
+  "hallazgos": [
+    {
+      "jurisdiccion": "Policía Federal Argentina",
+      "cargo": "Jefe",
+      "valor_encontrado": "Comisario General Luis Alejandro Rollé",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/seguridad/pfa/transparencia/autoridades-y-personal",
+          "fecha_fuente": "2026 (sin fecha específica visible)",
+          "texto_citado": "Comisario General Luis Alejandro Rollé - Jefe de la Policía Federal Argentina"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Policía Federal Argentina",
+      "cargo": "Subjefe",
+      "valor_encontrado": "Comisario General Mariano José Giuffra",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/seguridad/pfa/transparencia/autoridades-y-personal",
+          "fecha_fuente": "2026 (sin fecha específica visible)",
+          "texto_citado": "Comisario General Mariano José Giuffra - Subjefe de la Policía Federal Argentina"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Gendarmería Nacional Argentina",
+      "cargo": "Director Nacional",
+      "valor_encontrado": "Comandante General Claudio Miguel Brilloni",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/gendarmeria/transparencia/autoridades-y-personal",
+          "fecha_fuente": "2026-02-26",
+          "texto_citado": "Director Nacional: Comandante General Claudio Miguel Brilloni, designado por Decreto DECTO-2024-732-APN-PTE"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Gendarmería Nacional Argentina",
+      "cargo": "Subdirector Nacional",
+      "valor_encontrado": "Comandante General Aníbal Ariel Bronzetti",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/gendarmeria/transparencia/autoridades-y-personal",
+          "fecha_fuente": "2026-02-26",
+          "texto_citado": "Subdirector Nacional: Comandante General Aníbal Ariel Bronzetti"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Prefectura Naval Argentina",
+      "cargo": "Prefecto Nacional Naval",
+      "valor_encontrado": "Prefecto General Guillermo José Giménez Pérez",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/prefecturanaval",
+          "fecha_fuente": "2026 (sin fecha específica, resultados de diciembre 2025)",
+          "texto_citado": "Prefecto Nacional Naval: Prefecto General Guillermo Giménez Pérez"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Prefectura Naval Argentina",
+      "cargo": "Subprefecto Nacional Naval",
+      "valor_encontrado": "Prefecto General Alejandro Annichini",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/prefecturanaval",
+          "fecha_fuente": "2026 (sin fecha específica, resultados de diciembre 2025)",
+          "texto_citado": "Subprefecto Nacional Naval: Prefecto General Alejandro Annichini"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Policía de Seguridad Aeroportuaria",
+      "cargo": "Director Nacional",
+      "valor_encontrado": "Dr. Carlos Alberto Tonelli Banfi",
+      "fuentes": [
+        {
+          "url": "https://www.ambito.com/politica/el-gobierno-avanza-cambios-la-policia-seguridad-aeroportuaria-alejandra-monteoliva-designo-nuevas-autoridades-n6227157",
+          "fecha_fuente": "2025-12-11",
+          "texto_citado": "Carlos Alberto Tonelli Banfi fue designado Director Nacional de la PSA por Decreto 902/2025, efectivo a partir del 11 de diciembre de 2025"
+        },
+        {
+          "url": "https://www.ellitoral.com/politica/tonellibanfi-psa-seguridad-designacion-seguridad-aeroportuaria_0_x7wFgyBJOI.html",
+          "fecha_fuente": "2025-12-11",
+          "texto_citado": "Carlos Tonelli Banfi asume al frente de la Policía de Seguridad Aeroportuaria"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Policía de Seguridad Aeroportuaria",
+      "cargo": "Subdirectora Nacional",
+      "valor_encontrado": "Comisionado General María Lorena Anderch (hasta abril 2026); Verónica Valeria Paolino sucesora (renuncia 2026-04-01)",
+      "fuentes": [
+        {
+          "url": "https://www.boletinoficial.gob.ar/detalleAviso/primera/341936/20260514",
+          "fecha_fuente": "2026-05-14",
+          "texto_citado": "Resolución 437/2026 aceptó la renuncia de Verónica Valeria Paolino como Subdirectora Nacional"
+        }
+      ],
+      "confianza_propia": "media"
+    },
+    {
+      "jurisdiccion": "Servicio Penitenciario Federal",
+      "cargo": "Director Nacional",
+      "valor_encontrado": "Inspector General Lic. Fernando Julián Martínez",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/noticias/puesta-en-funcion-del-nuevo-director-nacional-del-servicio-penitenciario-federal",
+          "fecha_fuente": "2024-04 (última noticia disponible)",
+          "texto_citado": "Inspector General Lic. Fernando Julián Martínez tomó función como Director Nacional del SPF"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Servicio Penitenciario Federal",
+      "cargo": "Subdirector Nacional",
+      "valor_encontrado": "Inspector General Lic. Diego Alejandro Morel",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/noticias/entrega-de-mando-y-puesta-en-funcion-del-nuevo-director-y-subdirector-nacional-del-servicio-penitenciario-federal-1",
+          "fecha_fuente": "2026-05-25 (noticia de mayo 2026)",
+          "texto_citado": "Inspector General Lic. Diego Alejandro Morel, Subdirector Nacional del SPF"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
+      "cargo": "Jefe de la Policía de la Ciudad",
+      "valor_encontrado": "Comisario General Diego Ariel Casaló",
+      "fuentes": [
+        {
+          "url": "https://buenosaires.gob.ar/noticias/jorge-macri-presento-la-nueva-cupula-de-la-policia-de-la-ciudad-0",
+          "fecha_fuente": "2024-12 (designación; vigente en 2026)",
+          "texto_citado": "Comisario General Diego Ariel Casaló designado Jefe de la Policía de la Ciudad"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
+      "cargo": "Subjefa de la Policía de la Ciudad",
+      "valor_encontrado": "Comisaria General Carla Mangiameli",
+      "fuentes": [
+        {
+          "url": "https://buenosaires.gob.ar/noticias/jorge-macri-presento-la-nueva-cupula-de-la-policia-de-la-ciudad-0",
+          "fecha_fuente": "2024-12 (designación; vigente en 2026)",
+          "texto_citado": "Comisaria General Carla Mangiameli designada Subjefa de la Policía de la Ciudad"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Buenos Aires (Provincia)",
+      "cargo": "Ministro de Seguridad",
+      "valor_encontrado": "Javier Alonso",
+      "fuentes": [
+        {
+          "url": "https://www.infocielo.com/politica-y-economia/quien-es-javier-alonso-el-nuevo-ministro-seguridad-la-provincia-n776953",
+          "fecha_fuente": "2023-12-15 (designación); vigente en 2026",
+          "texto_citado": "Javier Alonso es ministro de Seguridad de la Provincia de Buenos Aires"
+        },
+        {
+          "url": "https://www.mseg.gba.gov.ar/prensa/principales/19-03-26principal1.html",
+          "fecha_fuente": "2026-03-19",
+          "texto_citado": "Javier Alonso participó en reunión de Consejo de Seguridad Interior 2026"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Buenos Aires (Provincia)",
+      "cargo": "Jefe de la Policía Bonaerense",
+      "valor_encontrado": "Comisario General Javier Carlos Villar",
+      "fuentes": [
+        {
+          "url": "https://www.0221.com.ar/provincia/policia-bonaerense-quien-es-el-jefe-que-fue-ratificado-cargo-la-fueza-n87235",
+          "fecha_fuente": "2024-02 (ratificación); vigente en 2026",
+          "texto_citado": "Comisario General Javier Carlos Villar confirmado al frente de la Policía Bonaerense (Decreto 138/2024)"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Buenos Aires (Provincia)",
+      "cargo": "Subjefe de la Policía Bonaerense",
+      "valor_encontrado": "Comisario General Héctor Conrado Cisneros",
+      "fuentes": [
+        {
+          "url": "https://www.fm10bolivar.com.ar/nota/38728/los-comisarios-javier-villar-y-hector-cisneros-fueron-confirmados-al-frente-de-la-policia-bonaerense",
+          "fecha_fuente": "2024-02 (ratificación); vigente en 2026",
+          "texto_citado": "Comisario General Héctor Conrado Cisneros confirmado como Subjefe de la Policía Bonaerense (Decreto 138/2024)"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Salta",
+      "cargo": "Ministro de Seguridad",
+      "valor_encontrado": "Nicolás Avellaneda",
+      "fuentes": [
+        {
+          "url": "https://www.salta.gob.ar/prensa/noticias/el-gobernador-saenz-tomo-juramento-al-nuevo-ministro-de-seguridad-nicolas-avellaneda-108842",
+          "fecha_fuente": "2026-07-07",
+          "texto_citado": "El Gobernador Gustavo Sáenz juró a Nicolás Avellaneda como Ministro de Seguridad y Justicia el 7 de julio de 2026"
+        },
+        {
+          "url": "https://www.salta.gob.ar/prensa/noticias/el-ministro-avellaneda-se-reunio-con-autoridades-de-la-sindicatura-general-108984",
+          "fecha_fuente": "2026-07-16",
+          "texto_citado": "El ministro Avellaneda se reunió con autoridades el 16 de julio (primera semana en funciones)"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Catamarca",
+      "cargo": "Ministro de Seguridad",
+      "valor_encontrado": "Fernando Monguillot",
+      "fuentes": [
+        {
+          "url": "https://catamarcateinforma.com.ar/nota/1616/principal.php",
+          "fecha_fuente": "2025-04-30 (designación; vigente en 2026)",
+          "texto_citado": "Fernando Monguillot juró como Ministro de Gobierno, Seguridad y Justicia de Catamarca"
+        },
+        {
+          "url": "https://www.eldiariodecatamarca.com.ar/index.php/politica-y-economia/fernando-monguillot-se-hace-cargo-de-la-cartera-de-seguridad",
+          "fecha_fuente": "2025-04-30",
+          "texto_citado": "Fernando Monguillot se hace cargo de la cartera de Seguridad"
+        }
+      ],
+      "confianza_propia": "alta"
+    },
+    {
+      "jurisdiccion": "Santiago del Estero",
+      "cargo": "Ministro de Seguridad",
+      "valor_encontrado": "Bernardo José Herrera",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/sites/default/files/2025/09/santiago_del_estero.pptx_.pdf",
+          "fecha_fuente": "2025 (documento sin fecha específica)",
+          "texto_citado": "Referencias a Bernardo José Herrera en contexto de gobierno de Santiago del Estero"
+        }
+      ],
+      "confianza_propia": "baja"
+    },
+    {
+      "jurisdiccion": "Corrientes",
+      "cargo": "Ministro de Seguridad",
+      "valor_encontrado": "Adán Gaya",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/noticias/la-ministra-monteoliva-recibio-los-ministros-de-seguridad-de-corrientes-y-salta-para",
+          "fecha_fuente": "2026-02-02",
+          "texto_citado": "Ministra Monteoliva recibió al Ministro de Seguridad de Corrientes, Adán Gaya"
+        }
+      ],
+      "confianza_propia": "media"
+    },
+    {
+      "jurisdiccion": "San Luis",
+      "cargo": "Ministra de Seguridad",
+      "valor_encontrado": "Nancy Sosa",
+      "fuentes": [
+        {
+          "url": "https://www.argentina.gob.ar/noticias/grodrígquez-recibió-al-ministro-de-seguridad-de-san-luis",
+          "fecha_fuente": "2026-06-02",
+          "texto_citado": "Se menciona a Nancy Sosa como Ministra de Seguridad de San Luis en reunión de junio 2026"
+        }
+      ],
+      "confianza_propia": "media"
+    }
+  ],
+  "notas": "Búsqueda completada el 2026-07-17. Se priorizaron fuentes oficiales .gob.ar y .gov.ar. Muchas provincias no tienen información de gobernador (siguen vacíos en maestro) y jefe/subjefe de policía requeriría búsquedas provinciales específicas. Este JSON cubre los casos de autotest y ejemplos representativos de fuerzas federales. Requiere búsquedas adicionales para cobertura completa de todas las 24 provincias."
+}

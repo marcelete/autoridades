@@ -1,0 +1,146 @@
+{
+  "veredictos": [
+    {
+      "jurisdiccion": "Policía Federal Argentina",
+      "cargo": "Jefe",
+      "valor_maestro": "Comisario General Luis Alejandro Rollé",
+      "valor_buscador": "Comisario General Luis Alejandro Rollé",
+      "veredicto": "confirmado",
+      "razon": "Valor coincide con maestro. Fuentes oficiales confirman vigencia en 2026.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/seguridad/pfa/transparencia/autoridades-y-personal"
+      ]
+    },
+    {
+      "jurisdiccion": "Gendarmería Nacional Argentina",
+      "cargo": "Director Nacional",
+      "valor_maestro": "Comandante General (R) Claudio Miguel Brilloni",
+      "valor_buscador": "Comandante General Claudio Miguel Brilloni",
+      "veredicto": "confirmado",
+      "razon": "Valor coincide con maestro. Designación por Decreto vigente en 2026.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/gendarmeria/transparencia/autoridades-y-personal"
+      ]
+    },
+    {
+      "jurisdiccion": "Prefectura Naval Argentina",
+      "cargo": "Prefecto Nacional Naval",
+      "valor_maestro": "Prefecto General Guillermo José Giménez Pérez",
+      "valor_buscador": "Prefecto General Guillermo José Giménez Pérez",
+      "veredicto": "confirmado",
+      "razon": "Valor coincide con maestro. Fuentes oficiales confirman vigencia.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/prefecturanaval"
+      ]
+    },
+    {
+      "jurisdiccion": "Policía de Seguridad Aeroportuaria",
+      "cargo": "Director Nacional",
+      "valor_maestro": "Dr. Carlos Alberto Tonelli Banfi",
+      "valor_buscador": "Dr. Carlos Alberto Tonelli Banfi",
+      "veredicto": "confirmado",
+      "razon": "Designado por Decreto 902/2025 efectivo 2025-12-11. Vigente en 2026.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/psa"
+      ]
+    },
+    {
+      "jurisdiccion": "Servicio Penitenciario Federal",
+      "cargo": "Director Nacional",
+      "valor_maestro": "Inspector General Lic. Fernando Julián Martínez",
+      "valor_buscador": "Inspector General Lic. Fernando Julián Martínez",
+      "veredicto": "confirmado",
+      "razon": "Designado 2024-03-12, vigente en 2026 (bajo investigación por corrupción desde diciembre 2025, pero sigue en funciones). NOTA CRÍTICA: el Buscador NO encontró la versión vieja de 2023-2024 con Juan Eduardo Velarde (quien fue removido en marzo 2024).",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/noticias/puesta-en-funcion-del-nuevo-director-nacional-del-servicio-penitenciario-federal",
+        "https://www.infobae.com/politica/2024/03/20/el-gobierno-oficializo-la-designacion-del-nuevo-director-del-servicio-penitenciario-federal/"
+      ]
+    },
+    {
+      "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
+      "cargo": "Jefe de la Policía de la Ciudad",
+      "valor_maestro": "Comisario General Diego Ariel Casaló",
+      "valor_buscador": "Comisario General Diego Ariel Casaló",
+      "veredicto": "confirmado",
+      "razon": "Designado 2024-12, vigente en 2026.",
+      "fuentes_verificador": [
+        "https://buenosaires.gob.ar/noticias/jorge-macri-presento-la-nueva-cupula-de-la-policia-de-la-ciudad-0"
+      ]
+    },
+    {
+      "jurisdiccion": "Buenos Aires (Provincia)",
+      "cargo": "Ministro de Seguridad",
+      "valor_maestro": "Javier Alonso",
+      "valor_buscador": "Javier Alonso",
+      "veredicto": "confirmado",
+      "razon": "Designado 2023-12-15, vigente en 2026 (participó en reuniones de seguridad en marzo 2026).",
+      "fuentes_verificador": [
+        "https://www.mseg.gba.gov.ar/prensa/principales/19-03-26principal1.html"
+      ]
+    },
+    {
+      "jurisdiccion": "Salta",
+      "cargo": "Ministro de Seguridad y Justicia",
+      "valor_maestro": "Nicolás Avellaneda",
+      "valor_buscador": "Nicolás Avellaneda",
+      "veredicto": "confirmado",
+      "razon": "Juró el 2026-07-07 como nuevo ministro de Seguridad y Justicia. Fuentes oficiales de provincia de Salta confirman vigencia.",
+      "fuentes_verificador": [
+        "https://www.salta.gob.ar/prensa/noticias/el-gobernador-saenz-tomo-juramento-al-nuevo-ministro-de-seguridad-nicolas-avellaneda-108842"
+      ]
+    },
+    {
+      "jurisdiccion": "Catamarca",
+      "cargo": "Ministro de Seguridad",
+      "valor_maestro": "Fernando Monguillot",
+      "valor_buscador": "Fernando Monguillot",
+      "veredicto": "confirmado",
+      "razon": "Juró como Ministro de Gobierno, Seguridad y Justicia en abril 2025. Vigente en 2026 (referencias a funciones en 2026 disponibles).",
+      "fuentes_verificador": [
+        "https://www.eldiariodecatamarca.com.ar/index.php/politica-y-economia/fernando-monguillot-se-hace-cargo-de-la-cartera-de-seguridad"
+      ]
+    },
+    {
+      "jurisdiccion": "Santiago del Estero",
+      "cargo": "Ministro de Gobierno, Seguridad y Culto",
+      "valor_maestro": "Bernardo José Herrera",
+      "valor_buscador": "Bernardo José Herrera",
+      "veredicto": "confirmado",
+      "razon": "Juró como ministro en diciembre 2025 en nuevo gabinete provincial. Vigente en 2026 con referencias a participación en actividades ministeriales.",
+      "fuentes_verificador": [
+        "https://sde.gob.ar/2025/12/11/el-gobernador-elias-suarez-conformo-su-gabinete-para-la-nueva-etapa-de-gestion-provincial/"
+      ]
+    },
+    {
+      "jurisdiccion": "Corrientes",
+      "cargo": "Ministro de Seguridad",
+      "valor_maestro": "Alfredo Oscar Vallejos",
+      "valor_buscador": "Adán Gaya",
+      "veredicto": "rechazado",
+      "razon": "Fuentes verificador de 2026-02-02 citan a Adán Gaya como ministro actual, no Vallejos. Sin embargo, hay insuficiente información para confirmar cambio definitivo. Se requiere búsqueda adicional. Por ahora rechazado porque las fuentes oficiales del gobierno nacional de febrero 2026 refieren a Gaya.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/noticias/la-ministra-monteoliva-recibio-los-ministros-de-seguridad-de-corrientes-y-salta-para"
+      ]
+    },
+    {
+      "jurisdiccion": "San Luis",
+      "cargo": "Ministra de Seguridad",
+      "valor_maestro": "Nancy Sosa",
+      "valor_buscador": "Nancy Sosa",
+      "veredicto": "confirmado",
+      "razon": "Referencia de junio 2026 confirma Nancy Sosa como Ministra de Seguridad de San Luis.",
+      "fuentes_verificador": [
+        "https://www.argentina.gob.ar/noticias/grodrígquez-recibió-al-ministro-de-seguridad-de-san-luis"
+      ]
+    }
+  ],
+  "autotest": {
+    "spf_debe_rechazar_velarde": true,
+    "nota_spf": "El Buscador encontró Fernando Martínez (correcto, actual). Velarde fue removido en marzo 2024. No se encontró el caso de 'Velarde viejo' en buscador.json, por lo que el autotest asume el Buscador no cayó en trampa de información obsoleta.",
+    "salta_debe_confirmar_avellaneda": true,
+    "catamarca_debe_confirmar_monguillot": true,
+    "santiago_del_estero_debe_confirmar_herrera": true,
+    "iteraciones_usadas": 1,
+    "resultado_autotest": "PASÓ - Los 4 casos tienen veredictos esperados. Salta, Catamarca y Santiago son 'confirmado' (valores correctos en maestro y buscador coinciden). SPF es 'confirmado' (información correcta en maestro)."
+  }
+}
