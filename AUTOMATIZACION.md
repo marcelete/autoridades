@@ -112,3 +112,31 @@ rutina demuestra ser consistentemente mejor que Tavily+Groq, evaluar reemplazar 
 el pipeline de recolección semanal por un agente Claude — probablemente corriendo
 localmente (Task Scheduler + `claude` en modo headless) para no perder el acceso al
 Excel, que la nube no puede tocar.
+
+## Sistema de 2 agentes (Buscador + Verificador) — en prueba (2026-07-17)
+
+Motivado por un hallazgo real: la rutina de un solo agente de arriba propuso 4
+cambios el 2026-07-17; verificados a mano, 3 eran correctos y 1 no (Servicio
+Penitenciario Federal → "Velarde", una persona removida del cargo en 2024, tomada
+de una fuente de 2023 sin fecha visible en la URL). Las reglas de calidad
+escritas en un solo prompt no bastaron para evitarlo.
+
+**Diseño**: dos roles separados, documentados en `verificaciones/`:
+- **Buscador** (`verificaciones/prompt_buscador.md`): busca con WebSearch y reporta
+  hallazgos + fuentes para las 29 entidades, sin juzgar si es "un cambio".
+- **Verificador** (`verificaciones/prompt_verificador.md`): segunda pasada
+  independiente (no ve el razonamiento del Buscador) que busca activamente
+  evidencia de que una fuente esté superada antes de aceptar un cambio, y se
+  autoevalúa contra 4 casos ya conocidos (autotest) antes de terminar.
+
+Todo queda registrado en `verificaciones/AAAA-MM-DD_HHMM/` (`buscador.json`,
+`verificador.json`, `reporte.md`) + una fila en `verificaciones/historial.md` — ver
+el esquema completo en `verificaciones/README.md`.
+
+**Estado actual**: sesión de refinamiento única programada para el 2026-07-17 20:00
+ART (`trig_01KHrB4aFLoTPiANpdwbazEm`, `run_once_at`, no recurrente). Es una prueba —
+**no reemplaza** todavía la rutina semanal de producción
+(`trig_01FYEWGSbaSUxCrCBQZZPGDq`) ni la Tarea Programada local de Tavily+Groq, que
+siguen activas como respaldo. La decisión de reemplazar la producción se toma
+revisando el resultado (`verificaciones/2026-07-17_2000/reporte.md` y el autotest),
+no automáticamente.
