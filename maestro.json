@@ -1,5 +1,22 @@
 {
-  "fecha_actualizacion": "2026-04-23",
+  "fecha_actualizacion": "2026-07-20",
+  "cambios_recientes": [
+    {
+      "fecha": "2026-07-20",
+      "tipo": "gobernador",
+      "descripcion": "Verificación rutinaria semanal de autoridades. Agregados 24 gobernadores/jefes de gobierno que estaban vacíos."
+    },
+    {
+      "fecha": "2026-07-14",
+      "tipo": "cambio_personal",
+      "jurisdiccion": "Salta",
+      "cargo": "Jefe de Policía",
+      "anterior": "Comisario General Diego Antonio Bustos",
+      "nuevo": "Comisario General Walter Osvaldo Toledo",
+      "subjefe_nuevo": "Comisario General Guido Burgos",
+      "fuente": "https://www.salta.gob.ar/prensa/noticias/asumieron-las-nuevas-autoridades-de-la-jefatura-de-policia-108949"
+    }
+  ],
   "pais": "Argentina",
   "ministerio_seguridad_nacion": {
     "ministra": "Alejandra Susana Monteoliva",
@@ -33,7 +50,7 @@
     {
       "jurisdiccion": "Ciudad Autónoma de Buenos Aires",
       "gobernador": {
-        "titular": "",
+        "titular": "Jorge Macri",
         "cargo": "Jefe de Gobierno"
       },
       "ministerio_seguridad": {
@@ -49,7 +66,7 @@
     {
       "jurisdiccion": "Buenos Aires (Provincia)",
       "gobernador": {
-        "titular": "",
+        "titular": "Axel Kicillof",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -65,7 +82,7 @@
     {
       "jurisdiccion": "Santa Fe",
       "gobernador": {
-        "titular": "",
+        "titular": "Maximiliano Pullaro",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -81,7 +98,7 @@
     {
       "jurisdiccion": "Córdoba",
       "gobernador": {
-        "titular": "",
+        "titular": "Martín Llaryora",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -97,7 +114,7 @@
     {
       "jurisdiccion": "Mendoza",
       "gobernador": {
-        "titular": "",
+        "titular": "Alfredo Cornejo",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -113,7 +130,7 @@
     {
       "jurisdiccion": "Tucumán",
       "gobernador": {
-        "titular": "",
+        "titular": "Osvaldo Jaldo",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -129,7 +146,7 @@
     {
       "jurisdiccion": "Chaco",
       "gobernador": {
-        "titular": "",
+        "titular": "Leandro Zdero",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -145,7 +162,7 @@
     {
       "jurisdiccion": "Misiones",
       "gobernador": {
-        "titular": "",
+        "titular": "Hugo Passalacqua",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -161,7 +178,7 @@
     {
       "jurisdiccion": "Salta",
       "gobernador": {
-        "titular": "",
+        "titular": "Gustavo Sáenz",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -170,14 +187,14 @@
       },
       "policia": {
         "nombre": "Policía de Salta",
-        "jefe": "Comisario General Diego Antonio Bustos",
-        "subjefe": "Comisario General Walter Osvaldo Toledo"
+        "jefe": "Comisario General Walter Osvaldo Toledo",
+        "subjefe": "Comisario General Guido Burgos"
       }
     },
     {
       "jurisdiccion": "Corrientes",
       "gobernador": {
-        "titular": "",
+        "titular": "Juan Pablo Valdés",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -193,7 +210,7 @@
     {
       "jurisdiccion": "Entre Ríos",
       "gobernador": {
-        "titular": "",
+        "titular": "Rogelio Frigerio",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -209,7 +226,7 @@
     {
       "jurisdiccion": "San Luis",
       "gobernador": {
-        "titular": "",
+        "titular": "Claudio Poggi",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -225,7 +242,7 @@
     {
       "jurisdiccion": "Jujuy",
       "gobernador": {
-        "titular": "",
+        "titular": "Carlos Sadir",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -241,7 +258,7 @@
     {
       "jurisdiccion": "Neuquén",
       "gobernador": {
-        "titular": "",
+        "titular": "Rolando Figueroa",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -257,7 +274,7 @@
     {
       "jurisdiccion": "Río Negro",
       "gobernador": {
-        "titular": "",
+        "titular": "Alberto Weretilneck",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -273,7 +290,7 @@
     {
       "jurisdiccion": "Catamarca",
       "gobernador": {
-        "titular": "",
+        "titular": "Raúl Jalil",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -289,7 +306,7 @@
     {
       "jurisdiccion": "Formosa",
       "gobernador": {
-        "titular": "",
+        "titular": "Gildo Insfrán",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -305,7 +322,7 @@
     {
       "jurisdiccion": "La Pampa",
       "gobernador": {
-        "titular": "",
+        "titular": "Sergio Ziliotto",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -321,7 +338,7 @@
     {
       "jurisdiccion": "La Rioja",
       "gobernador": {
-        "titular": "",
+        "titular": "Ricardo Quintela",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -337,7 +354,7 @@
     {
       "jurisdiccion": "San Juan",
       "gobernador": {
-        "titular": "",
+        "titular": "Marcelo Orrego",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -353,7 +370,7 @@
     {
       "jurisdiccion": "Santa Cruz",
       "gobernador": {
-        "titular": "",
+        "titular": "Claudio Vidal",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -369,7 +386,7 @@
     {
       "jurisdiccion": "Santiago del Estero",
       "gobernador": {
-        "titular": "",
+        "titular": "Elías Suárez",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -385,7 +402,7 @@
     {
       "jurisdiccion": "Tierra del Fuego",
       "gobernador": {
-        "titular": "",
+        "titular": "Gustavo Melella",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
@@ -401,7 +418,7 @@
     {
       "jurisdiccion": "Chubut",
       "gobernador": {
-        "titular": "",
+        "titular": "Ignacio Torres",
         "cargo": "Gobernador"
       },
       "ministerio_seguridad": {
