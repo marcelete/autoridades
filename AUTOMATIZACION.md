@@ -97,6 +97,21 @@ un sandbox en la nube); después de mergear un PR hay que correr localmente:
 python buscar_autoridades.py --excel-desde-maestro
 ```
 
+**Email de novedades (2026-07-21):** si esa semana algún campo quedó como "Cambió" o
+"Dudoso", la rutina además envía un email a `marcebellizia@gmail.com` (herramienta MCP
+de Gmail, conectada a nivel cuenta) con el resumen de novedades y una tabla completa
+de las 29 entidades con su estado actual. Si todo dio "Confirmado", no se envía ningún
+email esa semana — se evita ruido cuando no hay nada que revisar. No es un adjunto
+`.xlsx` real (el sandbox no tiene Excel/xlwings): es una tabla en el cuerpo del email
+o un adjunto `.md`. El texto completo de esta instrucción vive en
+[rutina_verificacion_semanal.md](rutina_verificacion_semanal.md) (paso 6).
+
+Limitación conocida: el conector de Gmail está autorizado a nivel cuenta pero no
+estaba en la lista de herramientas de esta rutina al momento de agregar el paso 6 —
+si el primer email no llega, hay que habilitar el conector de Gmail para esta rutina
+puntual desde el editor de `/schedule` en claude.ai (no es algo controlable vía la
+API de rutinas).
+
 **Modelo:** arranca con Haiku 4.5 (para minimizar consumo de tokens en una tarea
 semanal recurrente). Si el reporte muestra la misma falla que tuvo Groq/llama-3.3-70b
 (poco recall, no distingue fuentes desactualizadas), reconfigurar la rutina a

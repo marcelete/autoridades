@@ -74,6 +74,32 @@ repo privado `github.com/marcelete/autoridades`. Tu trabajo:
    - No toques ningún otro archivo del repo (el Excel no se actualiza desde acá,
      es un paso manual local aparte).
 
-Sé conciso. El objetivo es que una persona pueda leer el reporte en un par de
-minutos y decidir si mergea el PR o no — no hace falta explicar tu proceso de
-búsqueda paso a paso, sólo los hallazgos y las fuentes.
+6. Email de novedades — SÓLO si al menos un campo quedó clasificado como
+   "Cambió" o "Dudoso" (si todo dio "Confirmado" esta semana, no envíes nada,
+   ni vacío ni de "todo OK" — el reporte y este run ya quedan guardados en el
+   historial de la rutina):
+   - Enviá un email a `marcebellizia@gmail.com` con la herramienta MCP de Gmail
+     disponible en esta sesión (conector Gmail).
+   - Asunto: `SIFCOP - Novedades en autoridades de seguridad (<fecha de hoy>)`.
+   - Cuerpo, en este orden:
+     1. El mismo resumen de novedades del punto 5 (campo, jurisdicción, valor
+        anterior → nuevo, fuente(s), fecha, y si se abrió PR o no).
+     2. Una tabla completa (Markdown o HTML, lo que te resulte más simple) con
+        las 29 entidades y sus ~110 campos con el estado **actual**: para los
+        campos "Confirmado" usá el valor de `maestro.json`; para los "Cambió"
+        usá el valor nuevo encontrado; los "Dudoso" marcalos con una nota
+        aclarando por qué. Esto le da al destinatario el panorama completo,
+        no sólo el diff. No es un archivo Excel real — el sandbox donde corre
+        esta rutina no tiene Excel/xlwings instalado, así que no intentes
+        generar un `.xlsx`; una tabla en el cuerpo del email (o un adjunto
+        `.md`) alcanza.
+   - Si el envío de email falla (por ejemplo, la herramienta de Gmail no está
+     disponible en esta sesión): no reintentes en loop ni bloquees el resto de
+     la rutina — el PR (si corresponde) ya se abrió en el paso 5. Dejá esa
+     falla anotada como última línea del reporte, para que se note al revisar
+     el historial de corridas de la rutina.
+
+Sé conciso. El objetivo es que una persona pueda leer el reporte (o el email,
+si hay novedades) en un par de minutos y decidir si mergea el PR o no — no
+hace falta explicar tu proceso de búsqueda paso a paso, sólo los hallazgos y
+las fuentes.
