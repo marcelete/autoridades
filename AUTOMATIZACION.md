@@ -97,20 +97,23 @@ un sandbox en la nube); después de mergear un PR hay que correr localmente:
 python buscar_autoridades.py --excel-desde-maestro
 ```
 
-**Email de novedades (2026-07-21):** si esa semana algún campo quedó como "Cambió" o
-"Dudoso", la rutina además envía un email a `marcebellizia@gmail.com` (herramienta MCP
-de Gmail, conectada a nivel cuenta) con el resumen de novedades y una tabla completa
-de las 29 entidades con su estado actual. Si todo dio "Confirmado", no se envía ningún
-email esa semana — se evita ruido cuando no hay nada que revisar. No es un adjunto
-`.xlsx` real (el sandbox no tiene Excel/xlwings): es una tabla en el cuerpo del email
-o un adjunto `.md`. El texto completo de esta instrucción vive en
+**Informe semanal en GitHub (2026-07-23):** en vez de email (se descartó a propósito
+para no darle a la rutina acceso a la casilla de Gmail del usuario), cada corrida
+sobrescribe [informes_semanales/ultimo.md](informes_semanales/ultimo.md) en `main`
+con la fecha, las novedades de esa semana (si hubo algún "Cambió"/"Dudoso") y una
+tabla Markdown con el estado actual de las 29 entidades / ~110 campos — y agrega una
+línea a `informes_semanales/historial.md` con un resumen corto de esa corrida. Esto
+pasa **siempre**, haya o no novedades, así que basta con mirar
+`informes_semanales/ultimo.md` en GitHub para saber el estado y confirmar que la
+rutina siguió corriendo. El PR contra `maestro.json` (cuando hay un "Cambió" de
+confianza alta) sigue siendo un mecanismo aparte, sin cambios. El texto completo de
+esta instrucción vive en
 [rutina_verificacion_semanal.md](rutina_verificacion_semanal.md) (paso 6).
 
-Limitación conocida: el conector de Gmail está autorizado a nivel cuenta pero no
-estaba en la lista de herramientas de esta rutina al momento de agregar el paso 6 —
-si el primer email no llega, hay que habilitar el conector de Gmail para esta rutina
-puntual desde el editor de `/schedule` en claude.ai (no es algo controlable vía la
-API de rutinas).
+Con esto, la rutina en la nube queda como la única vía en uso — ya no hace falta
+correr nada localmente para enterarse de las novedades semanales (aunque el Excel
+real de tu PC, si lo seguís usando, todavía sólo se actualiza corriendo
+`buscar_autoridades.py --excel-desde-maestro` ahí, ver sección de arriba).
 
 **Modelo:** arranca con Haiku 4.5 (para minimizar consumo de tokens en una tarea
 semanal recurrente). Si el reporte muestra la misma falla que tuvo Groq/llama-3.3-70b
